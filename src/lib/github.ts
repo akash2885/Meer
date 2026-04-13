@@ -76,7 +76,15 @@ export class GitHubClient {
     const data = (await response.json()) as GraphQLResponse;
 
     if (data.errors && data.errors.length > 0) {
-      throw new GitHubGraphQLError(data.errors.map((e) => e.message).join("; "));
+      // Deduplicate — GitHub returns one error object per failing field, all with the same message
+      const unique = [...new Set(data.errors.map((e) => e.message))];
+      const message = unique[0];
+      if (message.includes("Resource not accessible by personal access token")) {
+        throw new GitHubAuthError(
+          "Token missing required scope. Use a Classic token with the 'repo' scope in Settings."
+        );
+      }
+      throw new GitHubGraphQLError(unique.join("; "));
     }
 
     return data as T;

@@ -27,12 +27,18 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   }
 });
 
-// Re-schedule alarm when settings change
+// Re-schedule alarm and clear cached user when settings change
 chrome.storage.local.onChanged.addListener((changes) => {
   if (changes[STORAGE_KEYS.settings]) {
-    const newSettings = changes[STORAGE_KEYS.settings].newValue as Settings | undefined;
-    if (newSettings?.pollingInterval) {
-      scheduleAlarm(newSettings.pollingInterval);
+    const prev = changes[STORAGE_KEYS.settings].oldValue as Settings | undefined;
+    const next = changes[STORAGE_KEYS.settings].newValue as Settings | undefined;
+    if (next?.pollingInterval) {
+      scheduleAlarm(next.pollingInterval);
+    }
+    // If the token changed, clear the cached current user so it gets re-fetched
+    // with the new token on the next poll instead of using a potentially stale identity
+    if (prev?.token !== next?.token) {
+      chrome.storage.local.remove(STORAGE_KEYS.currentUser);
     }
   }
 });
