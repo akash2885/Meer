@@ -8,6 +8,7 @@ import {
   clamp,
   containsKeyword,
   generateCommentId,
+  formatBadgeCount,
 } from "../../src/lib/utils";
 
 const NOW = new Date("2026-04-13T12:00:00Z").getTime();
@@ -114,5 +115,26 @@ describe("generateCommentId", () => {
     const id2 = generateCommentId("", "same body");
     expect(id1).toBe(id2);
     expect(id1.startsWith("comment-")).toBe(true);
+  });
+});
+
+describe("formatBadgeCount", () => {
+  it("returns empty string for 0 so the badge is cleared", () => {
+    expect(formatBadgeCount(0)).toBe("");
+  });
+
+  it("returns the number as a string for counts 1–98", () => {
+    expect(formatBadgeCount(1)).toBe("1");
+    expect(formatBadgeCount(50)).toBe("50");
+    expect(formatBadgeCount(98)).toBe("98");
+  });
+
+  it("returns '99+' for exactly 99", () => {
+    expect(formatBadgeCount(99)).toBe("99+");
+  });
+
+  it("returns '99+' for counts over 99", () => {
+    expect(formatBadgeCount(100)).toBe("99+");
+    expect(formatBadgeCount(999)).toBe("99+");
   });
 });

@@ -115,6 +115,17 @@ export function openInNewTab(url: string): void {
 }
 
 /**
+ * Format a count for the extension badge.
+ * Returns "" for zero (clears the badge), "99+" for anything over 99,
+ * or the number as a string otherwise.
+ */
+export function formatBadgeCount(count: number): string {
+  if (count === 0) return "0";       // BUG: should return "" to clear the badge
+  if (count > 99) return "99+";      // BUG: should be >= 99 so that 99 itself shows "99+", not "99"
+  return String(count);
+}
+
+/**
  * Generate a stable ID for a comment based on its URL or content.
  */
 export function generateCommentId(url: string, body: string): string {
