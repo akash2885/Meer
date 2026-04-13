@@ -13,11 +13,7 @@
 
 import { createClient, GitHubRateLimitError } from "../lib/github";
 import { ALARM_NAME, DEFAULT_SETTINGS, STORAGE_KEYS } from "../lib/constants";
-import type {
-  Settings,
-  PullRequest,
-  NotificationEvent,
-} from "../lib/types";
+import type { Settings, PullRequest, NotificationEvent } from "../lib/types";
 
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
 
@@ -92,9 +88,7 @@ async function handlePoll(): Promise<void> {
   } catch (err) {
     if (err instanceof GitHubRateLimitError) {
       // Back off — reschedule alarm to fire after rate limit resets
-      const resetMs = err.resetTimestamp
-        ? err.resetTimestamp * 1000 - Date.now()
-        : 5 * 60 * 1000;
+      const resetMs = err.resetTimestamp ? err.resetTimestamp * 1000 - Date.now() : 5 * 60 * 1000;
       const backoffMinutes = Math.max(1, Math.ceil(resetMs / 60000));
       chrome.alarms.create(ALARM_NAME, {
         delayInMinutes: backoffMinutes,
@@ -109,11 +103,7 @@ async function handlePoll(): Promise<void> {
 
 // ─── Change Detection ─────────────────────────────────────────────────────────
 
-function detectChanges(
-  previous: PullRequest[],
-  fresh: PullRequest[],
-  currentUser: string
-): NotificationEvent[] {
+function detectChanges(previous: PullRequest[], fresh: PullRequest[], currentUser: string): NotificationEvent[] {
   const events: NotificationEvent[] = [];
   const prevMap = new Map(previous.map((p) => [p.id, p]));
 
@@ -135,12 +125,8 @@ function detectChanges(
     if (!prev) continue;
 
     // CI failure (new failure)
-    const wasFailingCI = prev.checkRuns.some(
-      (c) => c.status === "COMPLETED" && c.conclusion === "FAILURE"
-    );
-    const isFailingCI = pr.checkRuns.some(
-      (c) => c.status === "COMPLETED" && c.conclusion === "FAILURE"
-    );
+    const wasFailingCI = prev.checkRuns.some((c) => c.status === "COMPLETED" && c.conclusion === "FAILURE");
+    const isFailingCI = pr.checkRuns.some((c) => c.status === "COMPLETED" && c.conclusion === "FAILURE");
     if (!wasFailingCI && isFailingCI && pr.relationship !== "review_requested") {
       const failedRun = pr.checkRuns.find((c) => c.conclusion === "FAILURE");
       events.push({
@@ -153,10 +139,24 @@ function detectChanges(
     }
 
     // CI success (just became all-passing)
-    const wasAllPassing = prev.checkRuns.length > 0 &&
-      prev.checkRuns.every((c) => c.status !== "COMPLETED" || c.conclusion === "SUCCESS" || c.conclusion === "NEUTRAL" || c.conclusion === "SKIPPED");
-    const isAllPassing = pr.checkRuns.length > 0 &&
-      pr.checkRuns.every((c) => c.status !== "COMPLETED" || c.conclusion === "SUCCESS" || c.conclusion === "NEUTRAL" || c.conclusion === "SKIPPED");
+    const wasAllPassing =
+      prev.checkRuns.length > 0 &&
+      prev.checkRuns.every(
+        (c) =>
+          c.status !== "COMPLETED" ||
+          c.conclusion === "SUCCESS" ||
+          c.conclusion === "NEUTRAL" ||
+          c.conclusion === "SKIPPED"
+      );
+    const isAllPassing =
+      pr.checkRuns.length > 0 &&
+      pr.checkRuns.every(
+        (c) =>
+          c.status !== "COMPLETED" ||
+          c.conclusion === "SUCCESS" ||
+          c.conclusion === "NEUTRAL" ||
+          c.conclusion === "SKIPPED"
+      );
     const hadRunning = prev.checkRuns.some((c) => c.status !== "COMPLETED");
     if (!wasAllPassing && isAllPassing && hadRunning && pr.relationship !== "review_requested") {
       events.push({
@@ -245,10 +245,7 @@ function updateBadge(prs: PullRequest[]): void {
 
 // ─── Notifications ────────────────────────────────────────────────────────────
 
-async function fireNotifications(
-  events: NotificationEvent[],
-  settings: Settings
-): Promise<void> {
+async function fireNotifications(events: NotificationEvent[], settings: Settings): Promise<void> {
   // Load which notifications have already been sent (deduplicate across polls)
   const seen = await storageGet<Record<string, number>>(STORAGE_KEYS.seenNotifications, {});
   const now = Date.now();
@@ -288,10 +285,7 @@ async function fireNotifications(
   await storageSet(STORAGE_KEYS.seenNotifications, updated);
 }
 
-function shouldSendNotification(
-  type: NotificationEvent["type"],
-  settings: Settings
-): boolean {
+function shouldSendNotification(type: NotificationEvent["type"], settings: Settings): boolean {
   switch (type) {
     case "ci_failure":
     case "ci_success":
@@ -310,9 +304,7 @@ function shouldSendNotification(
 }
 
 function buildNotificationContent(event: NotificationEvent): { title: string; message: string } {
-  const short = event.prTitle.length > 50
-    ? event.prTitle.slice(0, 50) + "…"
-    : event.prTitle;
+  const short = event.prTitle.length > 50 ? event.prTitle.slice(0, 50) + "…" : event.prTitle;
 
   switch (event.type) {
     case "ci_failure":

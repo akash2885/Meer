@@ -32,9 +32,7 @@ export function TabNav({ activeTab, onTabChange, actionCount, allCount, commentC
           {tab.count !== undefined && tab.count > 0 && (
             <span
               className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${
-                tab.id === "actions" && tab.count > 0
-                  ? "bg-red-500/20 text-red-400"
-                  : "bg-slate-700 text-slate-400"
+                tab.id === "actions" && tab.count > 0 ? "bg-red-500/20 text-red-400" : "bg-slate-700 text-slate-400"
               }`}
             >
               {tab.count}

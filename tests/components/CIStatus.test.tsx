@@ -25,11 +25,7 @@ describe("CIStatus", () => {
 
   it("shows all check run names", () => {
     const pr = mockPR({
-      checkRuns: [
-        mockCheckRun({ name: "Build" }),
-        mockCheckRun({ name: "Lint" }),
-        mockCheckRun({ name: "Test" }),
-      ],
+      checkRuns: [mockCheckRun({ name: "Build" }), mockCheckRun({ name: "Lint" }), mockCheckRun({ name: "Test" })],
     });
     render(<CIStatus pr={pr} />);
     expect(screen.getByText("Build")).toBeInTheDocument();

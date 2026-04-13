@@ -53,14 +53,10 @@ export function scoreComment(input: ScoreInput): ScoreResult {
   }
 
   // ── Thread status ──
-  const threadStatus = input.isInUnresolvedThread
-    ? SCORE_WEIGHTS.thread.unresolved
-    : SCORE_WEIGHTS.thread.resolved;
+  const threadStatus = input.isInUnresolvedThread ? SCORE_WEIGHTS.thread.unresolved : SCORE_WEIGHTS.thread.resolved;
 
   // ── Author signals ──
-  const authorSignal = input.isFromCodeowner
-    ? SCORE_WEIGHTS.author.codeowner
-    : SCORE_WEIGHTS.author.contributor;
+  const authorSignal = input.isFromCodeowner ? SCORE_WEIGHTS.author.codeowner : SCORE_WEIGHTS.author.contributor;
 
   // ── Keyword matching ──
   // Only apply the highest matching tier (not stacking within same tier)
@@ -97,8 +93,7 @@ export function scoreComment(input: ScoreInput): ScoreResult {
   // ── Mention bonus ──
   const mentionBonus = input.mentionsCurrentUser ? SCORE_WEIGHTS.mention : 0;
 
-  const score =
-    reviewContext + threadStatus + authorSignal + keywordMatch + recencyBonus + mentionBonus;
+  const score = reviewContext + threadStatus + authorSignal + keywordMatch + recencyBonus + mentionBonus;
 
   return {
     score,

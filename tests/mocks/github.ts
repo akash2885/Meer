@@ -85,9 +85,7 @@ export function mockCriticalPR(overrides: Partial<PullRequest> = {}): PullReques
     healthStatus: "critical",
     myActionRequired: true,
     actionReason: "Failing CI",
-    checkRuns: [
-      mockCheckRun({ conclusion: "FAILURE", name: "CI / test" }),
-    ],
+    checkRuns: [mockCheckRun({ conclusion: "FAILURE", name: "CI / test" })],
     ...overrides,
   });
 }

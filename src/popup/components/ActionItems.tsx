@@ -22,18 +22,13 @@ export function ActionItems({ pullRequests }: ActionItemsProps) {
 
   if (actionItems.length === 0) {
     return (
-      <EmptyState
-        icon="✅"
-        title="You're all caught up!"
-        subtitle="No pull requests need your attention right now"
-      />
+      <EmptyState icon="✅" title="You're all caught up!" subtitle="No pull requests need your attention right now" />
     );
   }
 
   // Sort: critical first, then warning
   const sorted = [...actionItems].sort((a, b) => {
-    const rank = (s: PullRequest["healthStatus"]) =>
-      s === "critical" ? 0 : s === "warning" ? 1 : 2;
+    const rank = (s: PullRequest["healthStatus"]) => (s === "critical" ? 0 : s === "warning" ? 1 : 2);
     return rank(a.healthStatus) - rank(b.healthStatus);
   });
 

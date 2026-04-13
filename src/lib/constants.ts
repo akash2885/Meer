@@ -14,28 +14,8 @@ export const DEFAULT_PRIORITY_KEYWORDS = {
     "vulnerability",
     "crash",
   ],
-  medium: [
-    "should",
-    "consider",
-    "refactor",
-    "todo",
-    "important",
-    "concern",
-    "wrong",
-    "incorrect",
-    "missing",
-  ],
-  low: [
-    "nit",
-    "optional",
-    "suggestion",
-    "minor",
-    "nitpick",
-    "lgtm",
-    "looks good",
-    "nice",
-    "great",
-  ],
+  medium: ["should", "consider", "refactor", "todo", "important", "concern", "wrong", "incorrect", "missing"],
+  low: ["nit", "optional", "suggestion", "minor", "nitpick", "lgtm", "looks good", "nice", "great"],
 };
 
 export const DEFAULT_SETTINGS: Settings = {

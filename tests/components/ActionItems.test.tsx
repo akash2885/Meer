@@ -32,11 +32,7 @@ describe("ActionItems", () => {
   });
 
   it("displays the action reason for each item", () => {
-    render(
-      <ActionItems
-        pullRequests={[mockCriticalPR({ actionReason: "Failing CI" })]}
-      />
-    );
+    render(<ActionItems pullRequests={[mockCriticalPR({ actionReason: "Failing CI" })]} />);
     expect(screen.getByText(/Failing CI/)).toBeInTheDocument();
   });
 

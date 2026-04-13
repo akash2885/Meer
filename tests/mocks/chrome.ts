@@ -122,8 +122,8 @@ export function resetChromeMocks() {
       callback?.();
     }
   );
-  (chromeMock.alarms.clear as ReturnType<typeof vi.fn>).mockImplementation(
-    (_name: string, callback?: () => void) => callback?.()
+  (chromeMock.alarms.clear as ReturnType<typeof vi.fn>).mockImplementation((_name: string, callback?: () => void) =>
+    callback?.()
   );
   (chromeMock.runtime.sendMessage as ReturnType<typeof vi.fn>).mockResolvedValue({});
 }

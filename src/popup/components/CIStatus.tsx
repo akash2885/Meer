@@ -14,17 +14,15 @@ export function CIStatus({ pr }: CIStatusProps) {
   const [rerunning, setRerunning] = useState<string | null>(null);
 
   if (checkRuns.length === 0) {
-    return (
-      <p className="text-xs text-slate-500 italic">No CI checks found</p>
-    );
+    return <p className="text-xs text-slate-500 italic">No CI checks found</p>;
   }
 
   const passing = checkRuns.filter(
-    (c) => c.status === "COMPLETED" && (c.conclusion === "SUCCESS" || c.conclusion === "NEUTRAL" || c.conclusion === "SKIPPED")
+    (c) =>
+      c.status === "COMPLETED" &&
+      (c.conclusion === "SUCCESS" || c.conclusion === "NEUTRAL" || c.conclusion === "SKIPPED")
   ).length;
-  const failing = checkRuns.filter(
-    (c) => c.status === "COMPLETED" && c.conclusion === "FAILURE"
-  ).length;
+  const failing = checkRuns.filter((c) => c.status === "COMPLETED" && c.conclusion === "FAILURE").length;
   const running = checkRuns.filter((c) => c.status !== "COMPLETED").length;
 
   async function handleRerun(checkRun: CheckRun) {
@@ -46,8 +44,8 @@ export function CIStatus({ pr }: CIStatusProps) {
         {failing > 0
           ? `${failing} of ${checkRuns.length} check${checkRuns.length !== 1 ? "s" : ""} failing`
           : running > 0
-          ? `${running} check${running !== 1 ? "s" : ""} running…`
-          : `All ${passing} check${passing !== 1 ? "s" : ""} passing`}
+            ? `${running} check${running !== 1 ? "s" : ""} running…`
+            : `All ${passing} check${passing !== 1 ? "s" : ""} passing`}
       </p>
       <div className="space-y-1 max-h-[160px] overflow-y-auto">
         {checkRuns.map((run) => (
@@ -82,7 +80,10 @@ export function CheckRunItem({ run, onRerun, isRerunning }: CheckRunItemProps) {
             href={run.detailsUrl}
             target="_blank"
             rel="noreferrer"
-            onClick={(e) => { e.preventDefault(); chrome.tabs.create({ url: run.detailsUrl }); }}
+            onClick={(e) => {
+              e.preventDefault();
+              chrome.tabs.create({ url: run.detailsUrl });
+            }}
             className="text-xs text-slate-300 hover:text-blue-400 hover:underline truncate block"
           >
             {run.name}
@@ -90,9 +91,7 @@ export function CheckRunItem({ run, onRerun, isRerunning }: CheckRunItemProps) {
         ) : (
           <span className="text-xs text-slate-300 truncate block">{run.name}</span>
         )}
-        {run.completedAt && (
-          <span className="text-xs text-slate-500">{timeAgo(run.completedAt)}</span>
-        )}
+        {run.completedAt && <span className="text-xs text-slate-500">{timeAgo(run.completedAt)}</span>}
       </div>
       {isFailed && (
         <button
@@ -111,12 +110,17 @@ export function CheckRunItem({ run, onRerun, isRerunning }: CheckRunItemProps) {
 function getCheckIcon(run: CheckRun): string {
   if (run.status !== "COMPLETED") return "⟳";
   switch (run.conclusion) {
-    case "SUCCESS": return "✓";
-    case "FAILURE": return "✗";
+    case "SUCCESS":
+      return "✓";
+    case "FAILURE":
+      return "✗";
     case "NEUTRAL":
-    case "SKIPPED": return "–";
+    case "SKIPPED":
+      return "–";
     case "CANCELLED":
-    case "TIMED_OUT": return "⊘";
-    default: return "–";
+    case "TIMED_OUT":
+      return "⊘";
+    default:
+      return "–";
   }
 }

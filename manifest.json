@@ -3,15 +3,8 @@
   "name": "PRDash",
   "version": "1.0.0",
   "description": "Developer-focused pull request dashboard — see what needs your attention without opening GitHub.",
-  "permissions": [
-    "storage",
-    "alarms",
-    "notifications"
-  ],
-  "host_permissions": [
-    "https://api.github.com/*",
-    "https://*/*"
-  ],
+  "permissions": ["storage", "alarms", "notifications"],
+  "host_permissions": ["https://api.github.com/*", "https://*/*"],
   "action": {
     "default_popup": "src/popup/index.html",
     "default_icon": {

@@ -11,10 +11,7 @@ import { ErrorState } from "./components/ErrorState";
 
 export type Tab = "actions" | "all" | "comments";
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; message: string }
-> {
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; message: string }> {
   constructor(props: { children: React.ReactNode }) {
     super(props);
     this.state = { hasError: false, message: "" };
@@ -51,10 +48,7 @@ export function App() {
           <p className="text-slate-100 font-medium">Welcome to PRDash</p>
           <p className="text-slate-400 text-sm mt-1">Add your GitHub token to get started</p>
         </div>
-        <button
-          onClick={() => chrome.runtime.openOptionsPage()}
-          className="btn-primary"
-        >
+        <button onClick={() => chrome.runtime.openOptionsPage()} className="btn-primary">
           Open Settings
         </button>
       </div>
@@ -67,11 +61,7 @@ export function App() {
   return (
     <ErrorBoundary>
       <div className="w-[400px] max-h-[550px] bg-slate-900 flex flex-col overflow-hidden">
-        <Header
-          lastFetched={lastFetched}
-          isLoading={isLoading}
-          onRefresh={fetchPRs}
-        />
+        <Header lastFetched={lastFetched} isLoading={isLoading} onRefresh={fetchPRs} />
         <TabNav
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -86,15 +76,9 @@ export function App() {
             <LoadingState />
           ) : (
             <>
-              {activeTab === "actions" && (
-                <ActionItems pullRequests={pullRequests} />
-              )}
-              {activeTab === "all" && (
-                <PRList pullRequests={pullRequests} />
-              )}
-              {activeTab === "comments" && (
-                <CommentFeed pullRequests={pullRequests} />
-              )}
+              {activeTab === "actions" && <ActionItems pullRequests={pullRequests} />}
+              {activeTab === "all" && <PRList pullRequests={pullRequests} />}
+              {activeTab === "comments" && <CommentFeed pullRequests={pullRequests} />}
             </>
           )}
         </div>
