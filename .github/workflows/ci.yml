@@ -29,7 +29,8 @@ jobs:
         run: npx eslint src --ext .ts,.tsx
 
       - name: Format check
-        run: npm run format:check
+        run: |
+          npm run format:check || (npx prettier --write "src/**/*.{ts,tsx}" "tests/**/*.{ts,tsx}" && git diff && exit 1)
 
       - name: Test
         run: npm test
