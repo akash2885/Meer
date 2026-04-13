@@ -1,0 +1,53 @@
+import React from "react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { ActionItems } from "../../src/popup/components/ActionItems";
+import { mockPR, mockCriticalPR, mockReviewRequestedPR } from "../mocks/github";
+
+vi.mock("../../src/popup/hooks/useStore", () => ({
+  useStore: vi.fn(() => ({
+    settings: { token: "ghp_test", baseUrl: "https://api.github.com" },
+    fetchPRs: vi.fn(),
+  })),
+}));
+
+vi.mock("../../src/lib/github", () => ({
+  createClient: vi.fn(() => ({ approvePR: vi.fn(), rerequestCheckSuite: vi.fn() })),
+}));
+
+describe("ActionItems", () => {
+  it("shows only PRs where myActionRequired is true", () => {
+    const prs = [
+      mockPR({ id: "1", title: "Fine PR", myActionRequired: false }),
+      mockCriticalPR({ id: "2", title: "Needs attention" }),
+    ];
+    render(<ActionItems pullRequests={prs} />);
+    expect(screen.queryByText("Fine PR")).not.toBeInTheDocument();
+    expect(screen.getByText("Needs attention")).toBeInTheDocument();
+  });
+
+  it("shows empty state with 'all caught up' message when no action items", () => {
+    render(<ActionItems pullRequests={[mockPR({ myActionRequired: false })]} />);
+    expect(screen.getByText(/all caught up/i)).toBeInTheDocument();
+  });
+
+  it("displays the action reason for each item", () => {
+    render(
+      <ActionItems
+        pullRequests={[mockCriticalPR({ actionReason: "Failing CI" })]}
+      />
+    );
+    expect(screen.getByText(/Failing CI/)).toBeInTheDocument();
+  });
+
+  it("sorts critical items before warning items", () => {
+    const prs = [
+      mockReviewRequestedPR({ id: "w1", title: "Warning PR" }),
+      mockCriticalPR({ id: "c1", title: "Critical PR" }),
+    ];
+    render(<ActionItems pullRequests={prs} />);
+    const cards = screen.getAllByText(/PR$/);
+    // Critical should appear first
+    expect(cards[0].textContent).toContain("Critical");
+  });
+});
