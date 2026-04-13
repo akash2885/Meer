@@ -21,10 +21,7 @@ export const PR_FIELDS_FRAGMENT = `
     }
     reviewRequests(first: 10) {
       nodes {
-        requestedReviewer {
-          ... on User { login }
-          ... on Team { name }
-        }
+        __typename
       }
     }
     reviews(last: 30) {

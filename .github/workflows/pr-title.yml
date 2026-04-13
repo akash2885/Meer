@@ -1,0 +1,38 @@
+name: PR Title
+
+on:
+  pull_request:
+    branches: [main, dev]
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate conventional commit title
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Allowed types — mirrors conventional commits standard
+          types: |
+            feat
+            fix
+            chore
+            docs
+            refactor
+            test
+            perf
+            ci
+            build
+            revert
+          # Require a scope e.g. feat(popup): ... — set to false to make it optional
+          requireScope: false
+          # Minimum subject length after the colon
+          subjectPattern: ^[A-Z].+$
+          subjectPatternError: |
+            The subject "{subject}" must start with an uppercase letter.
+            Example: "feat: Add copy URL button to PR cards"

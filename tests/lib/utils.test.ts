@@ -107,7 +107,9 @@ describe("containsKeyword", () => {
 
 describe("generateCommentId", () => {
   it("returns URL when URL is provided", () => {
-    expect(generateCommentId("https://github.com/org/repo/pull/1#c1", "body")).toBe("https://github.com/org/repo/pull/1#c1");
+    expect(generateCommentId("https://github.com/org/repo/pull/1#c1", "body")).toBe(
+      "https://github.com/org/repo/pull/1#c1"
+    );
   });
   it("generates stable id from body when URL is empty", () => {
     const id1 = generateCommentId("", "same body");

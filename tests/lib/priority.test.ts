@@ -19,10 +19,10 @@ describe("scoreComment", () => {
       body: "This is a critical fix needed now",
       createdAt: ts(30), // 30 min ago → +10
       author: "codeowner",
-      isInUnresolvedThread: true,  // +20
+      isInUnresolvedThread: true, // +20
       reviewState: "CHANGES_REQUESTED", // +30
-      isFromCodeowner: true,       // +15
-      mentionsCurrentUser: true,   // +15
+      isFromCodeowner: true, // +15
+      mentionsCurrentUser: true, // +15
       keywords: DEFAULT_PRIORITY_KEYWORDS,
     });
     // 30 (CR) + 20 (unresolved) + 15 (codeowner) + 20 (high kw: critical) + 10 (recency) + 15 (mention) = 110
@@ -41,8 +41,8 @@ describe("scoreComment", () => {
       createdAt: ts(2 * 24 * 60), // 2 days old → +0 recency
       author: "contributor",
       isInUnresolvedThread: false, // +0
-      reviewState: "APPROVED",    // +5
-      isFromCodeowner: false,     // +5
+      reviewState: "APPROVED", // +5
+      isFromCodeowner: false, // +5
       mentionsCurrentUser: false, // +0
       keywords: DEFAULT_PRIORITY_KEYWORDS,
     });
@@ -86,9 +86,9 @@ describe("scoreComment", () => {
       body: "What do you think about this approach?",
       createdAt: ts(120), // 2 hours ago → recency +7
       author: "contributor",
-      isInUnresolvedThread: true,  // +20
+      isInUnresolvedThread: true, // +20
       reviewState: undefined,
-      isFromCodeowner: false,      // +5
+      isFromCodeowner: false, // +5
       mentionsCurrentUser: false,
       keywords: DEFAULT_PRIORITY_KEYWORDS,
     });
@@ -122,9 +122,36 @@ describe("scoreComment", () => {
   });
 
   it("keyword matching is case-insensitive", () => {
-    const lower = scoreComment({ body: "critical bug", createdAt: ts(30), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
-    const upper = scoreComment({ body: "CRITICAL BUG", createdAt: ts(30), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
-    const mixed = scoreComment({ body: "Critical Bug", createdAt: ts(30), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
+    const lower = scoreComment({
+      body: "critical bug",
+      createdAt: ts(30),
+      author: "a",
+      isInUnresolvedThread: false,
+      reviewState: undefined,
+      isFromCodeowner: false,
+      mentionsCurrentUser: false,
+      keywords: DEFAULT_PRIORITY_KEYWORDS,
+    });
+    const upper = scoreComment({
+      body: "CRITICAL BUG",
+      createdAt: ts(30),
+      author: "a",
+      isInUnresolvedThread: false,
+      reviewState: undefined,
+      isFromCodeowner: false,
+      mentionsCurrentUser: false,
+      keywords: DEFAULT_PRIORITY_KEYWORDS,
+    });
+    const mixed = scoreComment({
+      body: "Critical Bug",
+      createdAt: ts(30),
+      author: "a",
+      isInUnresolvedThread: false,
+      reviewState: undefined,
+      isFromCodeowner: false,
+      mentionsCurrentUser: false,
+      keywords: DEFAULT_PRIORITY_KEYWORDS,
+    });
     expect(lower.breakdown.keywordMatch).toBe(upper.breakdown.keywordMatch);
     expect(lower.breakdown.keywordMatch).toBe(mixed.breakdown.keywordMatch);
     expect(lower.breakdown.keywordMatch).toBe(20);
@@ -192,23 +219,68 @@ describe("scoreComment", () => {
 
   describe("recency bonuses", () => {
     it("gives +10 for comment under 1 hour old", () => {
-      const result = scoreComment({ body: "test", createdAt: ts(30), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
+      const result = scoreComment({
+        body: "test",
+        createdAt: ts(30),
+        author: "a",
+        isInUnresolvedThread: false,
+        reviewState: undefined,
+        isFromCodeowner: false,
+        mentionsCurrentUser: false,
+        keywords: DEFAULT_PRIORITY_KEYWORDS,
+      });
       expect(result.breakdown.recencyBonus).toBe(10);
     });
     it("gives +7 for comment 1-4 hours old", () => {
-      const result = scoreComment({ body: "test", createdAt: ts(2 * 60), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
+      const result = scoreComment({
+        body: "test",
+        createdAt: ts(2 * 60),
+        author: "a",
+        isInUnresolvedThread: false,
+        reviewState: undefined,
+        isFromCodeowner: false,
+        mentionsCurrentUser: false,
+        keywords: DEFAULT_PRIORITY_KEYWORDS,
+      });
       expect(result.breakdown.recencyBonus).toBe(7);
     });
     it("gives +4 for comment 4-12 hours old", () => {
-      const result = scoreComment({ body: "test", createdAt: ts(6 * 60), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
+      const result = scoreComment({
+        body: "test",
+        createdAt: ts(6 * 60),
+        author: "a",
+        isInUnresolvedThread: false,
+        reviewState: undefined,
+        isFromCodeowner: false,
+        mentionsCurrentUser: false,
+        keywords: DEFAULT_PRIORITY_KEYWORDS,
+      });
       expect(result.breakdown.recencyBonus).toBe(4);
     });
     it("gives +2 for comment 12-24 hours old", () => {
-      const result = scoreComment({ body: "test", createdAt: ts(18 * 60), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
+      const result = scoreComment({
+        body: "test",
+        createdAt: ts(18 * 60),
+        author: "a",
+        isInUnresolvedThread: false,
+        reviewState: undefined,
+        isFromCodeowner: false,
+        mentionsCurrentUser: false,
+        keywords: DEFAULT_PRIORITY_KEYWORDS,
+      });
       expect(result.breakdown.recencyBonus).toBe(2);
     });
     it("gives +0 for comment older than 24h", () => {
-      const result = scoreComment({ body: "test", createdAt: ts(30 * 60), author: "a", isInUnresolvedThread: false, reviewState: undefined, isFromCodeowner: false, mentionsCurrentUser: false, keywords: DEFAULT_PRIORITY_KEYWORDS });
+      const result = scoreComment({
+        body: "test",
+        createdAt: ts(30 * 60),
+        author: "a",
+        isInUnresolvedThread: false,
+        reviewState: undefined,
+        isFromCodeowner: false,
+        mentionsCurrentUser: false,
+        keywords: DEFAULT_PRIORITY_KEYWORDS,
+      });
       expect(result.breakdown.recencyBonus).toBe(0);
     });
   });
@@ -232,11 +304,7 @@ describe("getPriorityLevel", () => {
 
 describe("sortByPriority", () => {
   it("sorts items by priorityScore descending", () => {
-    const items = [
-      { priorityScore: 10 },
-      { priorityScore: 80 },
-      { priorityScore: 45 },
-    ];
+    const items = [{ priorityScore: 10 }, { priorityScore: 80 }, { priorityScore: 45 }];
     const sorted = sortByPriority(items);
     expect(sorted.map((i) => i.priorityScore)).toEqual([80, 45, 10]);
   });

@@ -9,13 +9,7 @@ interface PRListProps {
 
 export function PRList({ pullRequests }: PRListProps) {
   if (pullRequests.length === 0) {
-    return (
-      <EmptyState
-        icon="🎉"
-        title="No open pull requests"
-        subtitle="You have no open PRs right now"
-      />
-    );
+    return <EmptyState icon="🎉" title="No open pull requests" subtitle="You have no open PRs right now" />;
   }
 
   // Sorted by updatedAt descending (already sorted from the store)

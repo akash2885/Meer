@@ -1,0 +1,6 @@
+[files]
+extend-exclude = ["node_modules", "dist", "package-lock.json"]
+
+[default.extend-words]
+# GraphQL keyword used in queries — not a typo
+"tthe" = "tthe"

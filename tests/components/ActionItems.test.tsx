@@ -32,11 +32,7 @@ describe("ActionItems", () => {
   });
 
   it("displays the action reason for each item", () => {
-    render(
-      <ActionItems
-        pullRequests={[mockCriticalPR({ actionReason: "Failing CI" })]}
-      />
-    );
+    render(<ActionItems pullRequests={[mockCriticalPR({ actionReason: "Failing CI" })]} />);
     expect(screen.getByText(/Failing CI/)).toBeInTheDocument();
   });
 
@@ -66,11 +62,7 @@ describe("ActionItems", () => {
   });
 
   it("shows critical and warning pill counts in summary bar", () => {
-    const prs = [
-      mockCriticalPR({ id: "c1" }),
-      mockCriticalPR({ id: "c2" }),
-      mockReviewRequestedPR({ id: "w1" }),
-    ];
+    const prs = [mockCriticalPR({ id: "c1" }), mockCriticalPR({ id: "c2" }), mockReviewRequestedPR({ id: "w1" })];
     render(<ActionItems pullRequests={prs} />);
     expect(screen.getByText(/2 critical/i)).toBeInTheDocument();
     expect(screen.getByText(/1 warning/i)).toBeInTheDocument();

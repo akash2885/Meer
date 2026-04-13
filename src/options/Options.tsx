@@ -27,7 +27,10 @@ export function Options() {
   const [validatedUser, setValidatedUser] = useState<string | null>(null);
   const [tokenError, setTokenError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
-  const [keywordInput, setKeywordInput] = useState<{ tier: keyof PriorityKeywords; value: string }>({ tier: "high", value: "" });
+  const [keywordInput, setKeywordInput] = useState<{ tier: keyof PriorityKeywords; value: string }>({
+    tier: "high",
+    value: "",
+  });
 
   useEffect(() => {
     loadSettings().then((s) => {
@@ -38,9 +41,10 @@ export function Options() {
   }, []);
 
   async function handleValidateToken() {
-    const token = tokenInput.startsWith("ghp_") || tokenInput.startsWith("github_pat_") || tokenInput.startsWith("ghs_")
-      ? tokenInput
-      : settings.token; // user might not have re-typed, use existing
+    const token =
+      tokenInput.startsWith("ghp_") || tokenInput.startsWith("github_pat_") || tokenInput.startsWith("ghs_")
+        ? tokenInput
+        : settings.token; // user might not have re-typed, use existing
 
     if (!token) {
       setTokenError("Please enter a GitHub token.");
@@ -66,7 +70,9 @@ export function Options() {
   async function handleSave() {
     await saveSettings(settings);
     // Notify the service worker that settings changed
-    chrome.runtime.sendMessage({ type: "SETTINGS_UPDATED" }).catch(() => {/* SW may be inactive */});
+    chrome.runtime.sendMessage({ type: "SETTINGS_UPDATED" }).catch(() => {
+      /* SW may be inactive */
+    });
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   }
@@ -128,9 +134,7 @@ export function Options() {
           <h2 className="text-lg font-semibold">GitHub Authentication</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
-              Personal Access Token
-            </label>
+            <label className="block text-sm font-medium text-slate-300 mb-1.5">Personal Access Token</label>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <input
@@ -152,11 +156,7 @@ export function Options() {
                   {tokenVisible ? "Hide" : "Show"}
                 </button>
               </div>
-              <button
-                onClick={handleValidateToken}
-                disabled={validating}
-                className="btn-primary whitespace-nowrap"
-              >
+              <button onClick={handleValidateToken} disabled={validating} className="btn-primary whitespace-nowrap">
                 {validating ? "Validating…" : "Validate"}
               </button>
             </div>
@@ -165,12 +165,11 @@ export function Options() {
                 ✓ Authenticated as <span className="font-medium">@{validatedUser}</span>
               </p>
             )}
-            {tokenError && (
-              <p className="text-red-400 text-sm mt-1.5">{tokenError}</p>
-            )}
+            {tokenError && <p className="text-red-400 text-sm mt-1.5">{tokenError}</p>}
             <p className="text-slate-500 text-xs mt-2">
-              Requires scopes: <code className="text-slate-400">repo</code>, <code className="text-slate-400">read:user</code>.
-              Token is stored locally and never sent anywhere except GitHub.
+              Requires scopes: <code className="text-slate-400">repo</code>,{" "}
+              <code className="text-slate-400">read:user</code>. Token is stored locally and never sent anywhere except
+              GitHub.
             </p>
           </div>
 
@@ -192,16 +191,16 @@ export function Options() {
         <section className="card p-5 space-y-4">
           <h2 className="text-lg font-semibold">Polling</h2>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
-              Refresh Interval
-            </label>
+            <label className="block text-sm font-medium text-slate-300 mb-1.5">Refresh Interval</label>
             <select
               value={settings.pollingInterval}
               onChange={(e) => setSettings((s) => ({ ...s, pollingInterval: Number(e.target.value) }))}
               className="bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-blue-500"
             >
               {POLLING_INTERVAL_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
               ))}
             </select>
           </div>
