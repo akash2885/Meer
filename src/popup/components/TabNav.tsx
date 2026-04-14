@@ -1,5 +1,6 @@
 import React from "react";
 import type { Tab } from "../App";
+import { AssignmentLateIcon, ListIcon, ChatIcon } from "./Icons";
 
 interface TabNavProps {
   activeTab: Tab;
@@ -9,9 +10,15 @@ interface TabNavProps {
   commentCount: number;
 }
 
+const TAB_ICONS: Record<Tab, React.ReactNode> = {
+  actions: <AssignmentLateIcon className="w-3.5 h-3.5" />,
+  all: <ListIcon className="w-3.5 h-3.5" />,
+  comments: <ChatIcon className="w-3.5 h-3.5" />,
+};
+
 export function TabNav({ activeTab, onTabChange, actionCount, allCount, commentCount }: TabNavProps) {
   const tabs: { id: Tab; label: string; count?: number }[] = [
-    { id: "actions", label: "Action Items", count: actionCount },
+    { id: "actions", label: "Actions", count: actionCount },
     { id: "all", label: "All PRs", count: allCount },
     { id: "comments", label: "Comments", count: commentCount > 0 ? commentCount : undefined },
   ];
@@ -28,6 +35,7 @@ export function TabNav({ activeTab, onTabChange, actionCount, allCount, commentC
               : "border-transparent text-slate-400 hover:text-slate-200"
           }`}
         >
+          {TAB_ICONS[tab.id]}
           {tab.label}
           {tab.count !== undefined && tab.count > 0 && (
             <span

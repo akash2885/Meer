@@ -3,6 +3,7 @@ import type { CheckRun, PullRequest } from "../../lib/types";
 import { timeAgo } from "../../lib/utils";
 import { createClient } from "../../lib/github";
 import { useStore } from "../hooks/useStore";
+import { CheckCircleFilledIcon, CancelIcon, SyncIcon, RemoveIcon, BlockIcon, ReplayIcon } from "./Icons";
 
 interface CIStatusProps {
   pr: PullRequest;
@@ -73,7 +74,7 @@ export function CheckRunItem({ run, onRerun, isRerunning }: CheckRunItemProps) {
 
   return (
     <div className="flex items-center gap-2 py-0.5">
-      <span className="shrink-0 text-sm">{icon}</span>
+      <span className="shrink-0">{icon}</span>
       <div className="flex-1 min-w-0">
         {run.detailsUrl ? (
           <a
@@ -98,29 +99,29 @@ export function CheckRunItem({ run, onRerun, isRerunning }: CheckRunItemProps) {
           onClick={onRerun}
           disabled={isRerunning}
           title="Re-run this check"
-          className="shrink-0 text-xs text-amber-400 hover:text-amber-300 disabled:opacity-50"
+          className="shrink-0 text-amber-400 hover:text-amber-300 disabled:opacity-50"
         >
-          {isRerunning ? "…" : "↺"}
+          {isRerunning ? <SyncIcon className="w-3.5 h-3.5 animate-spin" /> : <ReplayIcon className="w-3.5 h-3.5" />}
         </button>
       )}
     </div>
   );
 }
 
-function getCheckIcon(run: CheckRun): string {
-  if (run.status !== "COMPLETED") return "⟳";
+function getCheckIcon(run: CheckRun): React.ReactNode {
+  if (run.status !== "COMPLETED") return <SyncIcon className="w-3.5 h-3.5 text-amber-400 animate-spin" />;
   switch (run.conclusion) {
     case "SUCCESS":
-      return "✓";
+      return <CheckCircleFilledIcon className="w-3.5 h-3.5 text-emerald-400" />;
     case "FAILURE":
-      return "✗";
+      return <CancelIcon className="w-3.5 h-3.5 text-red-400" />;
     case "NEUTRAL":
     case "SKIPPED":
-      return "–";
+      return <RemoveIcon className="w-3.5 h-3.5 text-slate-400" />;
     case "CANCELLED":
     case "TIMED_OUT":
-      return "⊘";
+      return <BlockIcon className="w-3.5 h-3.5 text-slate-500" />;
     default:
-      return "–";
+      return <RemoveIcon className="w-3.5 h-3.5 text-slate-400" />;
   }
 }

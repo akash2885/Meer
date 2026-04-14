@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { PullRequest, Comment } from "../../lib/types";
 import { CommentItem } from "./CommentItem";
 import { EmptyState } from "./EmptyState";
+import { CheckCircleFilledIcon, ChatIcon } from "./Icons";
 
 interface CommentFeedProps {
   pullRequests: PullRequest[];
@@ -33,7 +34,11 @@ export function CommentFeed({ pullRequests }: CommentFeedProps) {
       <>
         {allComments.length > 0 && !showResolved ? (
           <div className="p-3 space-y-2">
-            <EmptyState icon="✓" title="All comments resolved" subtitle="Toggle below to show resolved threads" />
+            <EmptyState
+              icon={<CheckCircleFilledIcon className="w-8 h-8 text-emerald-400" />}
+              title="All comments resolved"
+              subtitle="Toggle below to show resolved threads"
+            />
             <div className="flex justify-center">
               <button onClick={() => setShowResolved(true)} className="text-xs text-slate-400 hover:text-slate-200">
                 Show resolved
@@ -41,7 +46,11 @@ export function CommentFeed({ pullRequests }: CommentFeedProps) {
             </div>
           </div>
         ) : (
-          <EmptyState icon="💬" title="No comments yet" subtitle="Comments across your PRs will appear here" />
+          <EmptyState
+            icon={<ChatIcon className="w-8 h-8 text-slate-500" />}
+            title="No comments yet"
+            subtitle="Comments across your PRs will appear here"
+          />
         )}
       </>
     );
