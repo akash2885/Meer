@@ -76,10 +76,15 @@ export class GitHubClient {
     const data = (await response.json()) as GraphQLResponse;
 
     if (data.errors && data.errors.length > 0) {
-      // Deduplicate — GitHub returns one error object per failing field, all with the same message
+      // Deduplicate — GitHub returns one error object per failing field, often with identical messages
       const unique = [...new Set(data.errors.map((e) => e.message))];
-      const message = unique[0];
-      if (message.includes("Resource not accessible by personal access token")) {
+      // Check all messages, not just the first — GitHub uses two different phrasings for scope errors
+      const isScopeError = unique.some(
+        (m) =>
+          m.includes("Resource not accessible by personal access token") ||
+          m.includes("not been granted the required scopes")
+      );
+      if (isScopeError) {
         throw new GitHubAuthError(
           "Token missing required scope. Use a Classic token with the 'repo' scope in Settings."
         );
