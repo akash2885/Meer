@@ -2,6 +2,7 @@ import React from "react";
 import type { PullRequest } from "../../lib/types";
 import { PRCard } from "./PRCard";
 import { EmptyState } from "./EmptyState";
+import { CheckCircleFilledIcon } from "./Icons";
 
 interface ActionItemsProps {
   pullRequests: PullRequest[];
@@ -22,7 +23,11 @@ export function ActionItems({ pullRequests }: ActionItemsProps) {
 
   if (actionItems.length === 0) {
     return (
-      <EmptyState icon="✅" title="You're all caught up!" subtitle="No pull requests need your attention right now" />
+      <EmptyState
+        icon={<CheckCircleFilledIcon className="w-8 h-8 text-emerald-400" />}
+        title="You're all caught up!"
+        subtitle="No pull requests need your attention right now"
+      />
     );
   }
 
