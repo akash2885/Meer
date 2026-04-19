@@ -61,7 +61,10 @@ export class GitHubClient {
       const reset = response.headers.get("X-RateLimit-Reset");
       if (remaining === "0") {
         const resetDate = reset ? new Date(parseInt(reset) * 1000).toLocaleTimeString() : "soon";
-        throw new GitHubRateLimitError(`GitHub API rate limit exceeded. Resets at ${resetDate}.`, reset ? parseInt(reset) : null);
+        throw new GitHubRateLimitError(
+          `GitHub API rate limit exceeded. Resets at ${resetDate}.`,
+          reset ? parseInt(reset) : null
+        );
       }
       throw new GitHubAuthError("Access forbidden. Check your token permissions.");
     }
@@ -70,10 +73,23 @@ export class GitHubClient {
       throw new GitHubNetworkError(`GitHub API error: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json() as GraphQLResponse;
+    const data = (await response.json()) as GraphQLResponse;
 
     if (data.errors && data.errors.length > 0) {
-      throw new GitHubGraphQLError(data.errors.map((e) => e.message).join("; "));
+      // Deduplicate — GitHub returns one error object per failing field, often with identical messages
+      const unique = [...new Set(data.errors.map((e) => e.message))];
+      // Check all messages, not just the first — GitHub uses two different phrasings for scope errors
+      const isScopeError = unique.some(
+        (m) =>
+          m.includes("Resource not accessible by personal access token") ||
+          m.includes("not been granted the required scopes")
+      );
+      if (isScopeError) {
+        throw new GitHubAuthError(
+          "Token missing required scope. Use a Classic token with the 'repo' scope in Settings."
+        );
+      }
+      throw new GitHubGraphQLError(unique.join("; "));
     }
 
     return data as T;
@@ -168,15 +184,20 @@ function transformPR(
 ): PullRequest {
   const reviews = transformReviews(raw);
   const checkRuns = transformCheckRuns(raw);
-  const reviewThreads = transformReviewThreads(raw, currentUser, keywords, raw.title, raw.url, raw.repository.nameWithOwner);
+  const reviewThreads = transformReviewThreads(
+    raw,
+    currentUser,
+    keywords,
+    raw.title,
+    raw.url,
+    raw.repository.nameWithOwner
+  );
   const comments = transformComments(raw, currentUser, keywords, raw.title, raw.url, raw.repository.nameWithOwner);
   const allComments = mergeAllComments(raw, reviewThreads, currentUser, keywords);
 
   const approvalCount = reviews.filter((r) => r.state === "APPROVED").length;
   const hasChangesRequested = reviews.some((r) => r.state === "CHANGES_REQUESTED");
-  const hasFailingCI = checkRuns.some(
-    (c) => c.status === "COMPLETED" && c.conclusion === "FAILURE"
-  );
+  const hasFailingCI = checkRuns.some((c) => c.status === "COMPLETED" && c.conclusion === "FAILURE");
   const hasRunningCI = checkRuns.some((c) => c.status !== "COMPLETED");
   const isConflicting = raw.mergeable === "CONFLICTING";
 

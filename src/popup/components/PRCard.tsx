@@ -4,6 +4,20 @@ import { timeAgo, truncate } from "../../lib/utils";
 import { CIStatus } from "./CIStatus";
 import { createClient } from "../../lib/github";
 import { useStore } from "../hooks/useStore";
+import {
+  CircleIcon,
+  CancelIcon,
+  SyncIcon,
+  CheckCircleFilledIcon,
+  ChatIcon,
+  WarningIcon,
+  ExpandMoreIcon,
+  ExpandLessIcon,
+  DoneAllIcon,
+  ArrowForwardIcon,
+  ContentCopyIcon,
+  CheckIcon,
+} from "./Icons";
 
 interface PRCardProps {
   pr: PullRequest;
@@ -12,12 +26,24 @@ interface PRCardProps {
 
 function HealthBadge({ status }: { status: PullRequest["healthStatus"] }) {
   if (status === "good") {
-    return <span className="badge-green" title="All checks passing">●</span>;
+    return (
+      <span className="badge-green" title="All checks passing">
+        <CircleIcon className="w-2 h-2" />
+      </span>
+    );
   }
   if (status === "warning") {
-    return <span className="badge-yellow" title="Checks running or pending review">●</span>;
+    return (
+      <span className="badge-yellow" title="Checks running or pending review">
+        <CircleIcon className="w-2 h-2" />
+      </span>
+    );
   }
-  return <span className="badge-red" title="CI failing, changes requested, or merge conflict">●</span>;
+  return (
+    <span className="badge-red" title="CI failing, changes requested, or merge conflict">
+      <CircleIcon className="w-2 h-2" />
+    </span>
+  );
 }
 
 function CIIcon({ pr }: { pr: PullRequest }) {
@@ -25,15 +51,30 @@ function CIIcon({ pr }: { pr: PullRequest }) {
   if (runs.length === 0) return null;
   const failing = runs.some((c) => c.status === "COMPLETED" && c.conclusion === "FAILURE");
   const running = runs.some((c) => c.status !== "COMPLETED");
-  if (failing) return <span className="text-red-400 text-xs" title="CI failing">✗</span>;
-  if (running) return <span className="text-amber-400 text-xs animate-spin inline-block" title="CI running">⟳</span>;
-  return <span className="text-emerald-400 text-xs" title="CI passing">✓</span>;
+  if (failing)
+    return (
+      <span className="text-red-400" title="CI failing">
+        <CancelIcon className="w-3.5 h-3.5" />
+      </span>
+    );
+  if (running)
+    return (
+      <span className="text-amber-400 animate-spin inline-flex" title="CI running">
+        <SyncIcon className="w-3.5 h-3.5" />
+      </span>
+    );
+  return (
+    <span className="text-emerald-400" title="CI passing">
+      <CheckCircleFilledIcon className="w-3.5 h-3.5" />
+    </span>
+  );
 }
 
 export function PRCard({ pr, showActionReason = false }: PRCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [approving, setApproving] = useState(false);
   const [approved, setApproved] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { settings, fetchPRs } = useStore();
 
   function openPR(e: React.MouseEvent) {
@@ -58,14 +99,19 @@ export function PRCard({ pr, showActionReason = false }: PRCardProps) {
     }
   }
 
+  function handleCopyUrl(e: React.MouseEvent) {
+    e.stopPropagation();
+    navigator.clipboard.writeText(pr.url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
   const isDraft = pr.isDraft;
   const isConflicting = pr.mergeable === "CONFLICTING";
 
   return (
-    <div
-      className="card p-3 hover:brightness-110 transition-all cursor-pointer"
-      onClick={openPR}
-    >
+    <div className="card p-3 hover:brightness-110 transition-all cursor-pointer" onClick={openPR}>
       {/* Top row: repo + health + ci */}
       <div className="flex items-center gap-2 mb-1.5">
         <span className="text-xs text-slate-400 truncate flex-1">{pr.repo}</span>
@@ -91,7 +137,9 @@ export function PRCard({ pr, showActionReason = false }: PRCardProps) {
             src={pr.author.avatarUrl}
             alt={pr.author.login}
             className="w-4 h-4 rounded-full"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
           />
           <span>{pr.author.login}</span>
         </span>
@@ -99,24 +147,32 @@ export function PRCard({ pr, showActionReason = false }: PRCardProps) {
         <span>{timeAgo(pr.updatedAt)}</span>
 
         {pr.requestedReviewerCount > 0 && (
-          <span title="Approvals">
-            {pr.approvalCount}/{pr.requestedReviewerCount} ✓
+          <span className="flex items-center gap-0.5" title="Approvals">
+            {pr.approvalCount}/{pr.requestedReviewerCount}
+            <CheckCircleFilledIcon className="w-3 h-3 text-emerald-500" />
           </span>
         )}
 
         {pr.comments.length > 0 && (
-          <span title="Comments">💬 {pr.comments.length}</span>
+          <span className="flex items-center gap-0.5" title="Comments">
+            <ChatIcon className="w-3 h-3" />
+            {pr.comments.length}
+          </span>
         )}
 
         {isConflicting && (
-          <span className="text-red-400" title="Merge conflict">⚠ Conflict</span>
+          <span className="flex items-center gap-0.5 text-red-400" title="Merge conflict">
+            <WarningIcon className="w-3 h-3" />
+            Conflict
+          </span>
         )}
       </div>
 
       {/* Action reason */}
       {showActionReason && pr.actionReason && (
-        <div className="mt-2 text-xs text-amber-400 font-medium">
-          → {pr.actionReason}
+        <div className="mt-2 flex items-center gap-1 text-xs text-amber-400 font-medium">
+          <ArrowForwardIcon className="w-3 h-3 shrink-0" />
+          {pr.actionReason}
         </div>
       )}
 
@@ -124,26 +180,57 @@ export function PRCard({ pr, showActionReason = false }: PRCardProps) {
       <div className="flex items-center gap-2 mt-2">
         {pr.checkRuns.length > 0 && (
           <button
-            onClick={(e) => { e.stopPropagation(); setExpanded((v) => !v); }}
-            className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              setExpanded((v) => !v);
+            }}
+            className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
           >
-            {expanded ? "▲ Hide CI" : "▼ Show CI"}
+            {expanded ? (
+              <>
+                <ExpandLessIcon className="w-3.5 h-3.5" /> Hide CI
+              </>
+            ) : (
+              <>
+                <ExpandMoreIcon className="w-3.5 h-3.5" /> Show CI
+              </>
+            )}
           </button>
         )}
 
-        {pr.relationship !== "authored" && !approved && (
+        <div className="flex items-center gap-2 ml-auto">
           <button
-            onClick={handleApprove}
-            disabled={approving}
-            className="text-xs text-emerald-400 hover:text-emerald-300 disabled:opacity-50 ml-auto"
+            onClick={handleCopyUrl}
+            title="Copy PR URL"
+            className="flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
           >
-            {approving ? "Approving…" : "✓ Approve"}
+            {copied ? (
+              <>
+                <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-emerald-400">Copied</span>
+              </>
+            ) : (
+              <ContentCopyIcon className="w-3.5 h-3.5" />
+            )}
           </button>
-        )}
 
-        {approved && (
-          <span className="text-xs text-emerald-400 ml-auto">Approved!</span>
-        )}
+          {pr.relationship !== "authored" && !approved && (
+            <button
+              onClick={handleApprove}
+              disabled={approving}
+              className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 disabled:opacity-50"
+            >
+              <DoneAllIcon className="w-3.5 h-3.5" />
+              {approving ? "Approving…" : "Approve"}
+            </button>
+          )}
+
+          {approved && (
+            <span className="flex items-center gap-1 text-xs text-emerald-400">
+              <CheckCircleFilledIcon className="w-3.5 h-3.5" /> Approved
+            </span>
+          )}
+        </div>
       </div>
 
       {expanded && (

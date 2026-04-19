@@ -25,11 +25,7 @@ describe("CIStatus", () => {
 
   it("shows all check run names", () => {
     const pr = mockPR({
-      checkRuns: [
-        mockCheckRun({ name: "Build" }),
-        mockCheckRun({ name: "Lint" }),
-        mockCheckRun({ name: "Test" }),
-      ],
+      checkRuns: [mockCheckRun({ name: "Build" }), mockCheckRun({ name: "Lint" }), mockCheckRun({ name: "Test" })],
     });
     render(<CIStatus pr={pr} />);
     expect(screen.getByText("Build")).toBeInTheDocument();
@@ -37,22 +33,22 @@ describe("CIStatus", () => {
     expect(screen.getByText("Test")).toBeInTheDocument();
   });
 
-  it("shows ✓ icon for passing checks", () => {
+  it("shows green icon for passing checks", () => {
     const pr = mockPR({ checkRuns: [mockCheckRun({ conclusion: "SUCCESS" })] });
     const { container } = render(<CIStatus pr={pr} />);
-    expect(container.textContent).toContain("✓");
+    expect(container.querySelector("svg.text-emerald-400")).toBeInTheDocument();
   });
 
-  it("shows ✗ icon for failing checks", () => {
+  it("shows red icon for failing checks", () => {
     const pr = mockPR({ checkRuns: [mockCheckRun({ conclusion: "FAILURE" })] });
     const { container } = render(<CIStatus pr={pr} />);
-    expect(container.textContent).toContain("✗");
+    expect(container.querySelector("svg.text-red-400")).toBeInTheDocument();
   });
 
-  it("shows ⟳ icon for running checks", () => {
+  it("shows spinning amber icon for running checks", () => {
     const pr = mockPR({ checkRuns: [mockCheckRun({ status: "IN_PROGRESS", conclusion: null })] });
     const { container } = render(<CIStatus pr={pr} />);
-    expect(container.textContent).toContain("⟳");
+    expect(container.querySelector("svg.text-amber-400")).toBeInTheDocument();
   });
 
   it("shows re-run button only for failing checks", () => {

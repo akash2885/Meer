@@ -81,10 +81,7 @@ describe("Badge logic", () => {
 
 // ── Notification Logic ────────────────────────────────────────────────────────
 
-function shouldSendNotification(
-  type: string,
-  settings: Settings
-): boolean {
+function shouldSendNotification(type: string, settings: Settings): boolean {
   switch (type) {
     case "ci_failure":
     case "ci_success":

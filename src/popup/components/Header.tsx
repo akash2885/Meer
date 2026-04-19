@@ -12,11 +12,7 @@ export function Header({ lastFetched, isLoading, onRefresh }: HeaderProps) {
     <header className="flex items-center justify-between px-4 py-3 border-b border-slate-700 bg-slate-900 shrink-0">
       <div className="flex items-center gap-2">
         <span className="font-bold text-slate-100 text-sm tracking-wide">PRDash</span>
-        {lastFetched && (
-          <span className="text-slate-500 text-xs">
-            Updated {timeAgo(lastFetched)}
-          </span>
-        )}
+        {lastFetched && <span className="text-slate-500 text-xs">Updated {timeAgo(lastFetched)}</span>}
       </div>
       <div className="flex items-center gap-1">
         <button

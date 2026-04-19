@@ -63,9 +63,7 @@ describe("CommentFeed", () => {
 
   it("shows resolved comments when toggled", () => {
     const pr = mockPR({
-      comments: [
-        mockComment({ id: "r1", body: "Resolved comment", isResolved: true }),
-      ],
+      comments: [mockComment({ id: "r1", body: "Resolved comment", isResolved: true })],
     });
     render(<CommentFeed pullRequests={[pr]} />);
     // Toggle to show resolved (find the "Show resolved" button in all-resolved state)

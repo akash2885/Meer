@@ -17,7 +17,11 @@ vi.mock("../../src/lib/github", () => ({
 
 describe("PRList", () => {
   it("renders the correct number of PR cards", () => {
-    const prs = [mockPR({ id: "1", title: "PR One" }), mockPR({ id: "2", title: "PR Two" }), mockPR({ id: "3", title: "PR Three" })];
+    const prs = [
+      mockPR({ id: "1", title: "PR One" }),
+      mockPR({ id: "2", title: "PR Two" }),
+      mockPR({ id: "3", title: "PR Three" }),
+    ];
     render(<PRList pullRequests={prs} />);
     expect(screen.getByText("PR One")).toBeInTheDocument();
     expect(screen.getByText("PR Two")).toBeInTheDocument();

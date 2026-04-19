@@ -37,14 +37,7 @@ export interface ReviewThread {
 export interface CheckRun {
   name: string;
   status: "QUEUED" | "IN_PROGRESS" | "COMPLETED";
-  conclusion:
-    | "SUCCESS"
-    | "FAILURE"
-    | "NEUTRAL"
-    | "CANCELLED"
-    | "TIMED_OUT"
-    | "SKIPPED"
-    | null;
+  conclusion: "SUCCESS" | "FAILURE" | "NEUTRAL" | "CANCELLED" | "TIMED_OUT" | "SKIPPED" | null;
   detailsUrl: string;
   completedAt: string | null;
   checkSuiteId: string;

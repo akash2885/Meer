@@ -32,11 +32,7 @@ describe("ActionItems", () => {
   });
 
   it("displays the action reason for each item", () => {
-    render(
-      <ActionItems
-        pullRequests={[mockCriticalPR({ actionReason: "Failing CI" })]}
-      />
-    );
+    render(<ActionItems pullRequests={[mockCriticalPR({ actionReason: "Failing CI" })]} />);
     expect(screen.getByText(/Failing CI/)).toBeInTheDocument();
   });
 
@@ -49,5 +45,31 @@ describe("ActionItems", () => {
     const cards = screen.getAllByText(/PR$/);
     // Critical should appear first
     expect(cards[0].textContent).toContain("Critical");
+  });
+
+  it("shows total item count in summary bar", () => {
+    const prs = [
+      mockCriticalPR({ id: "c1", title: "Critical PR" }),
+      mockReviewRequestedPR({ id: "w1", title: "Warning PR" }),
+    ];
+    render(<ActionItems pullRequests={prs} />);
+    expect(screen.getByText(/2 items/i)).toBeInTheDocument();
+  });
+
+  it("shows singular 'item' when only one action item", () => {
+    render(<ActionItems pullRequests={[mockCriticalPR({ id: "c1" })]} />);
+    expect(screen.getByText(/1 item$/i)).toBeInTheDocument();
+  });
+
+  it("shows critical and warning pill counts in summary bar", () => {
+    const prs = [mockCriticalPR({ id: "c1" }), mockCriticalPR({ id: "c2" }), mockReviewRequestedPR({ id: "w1" })];
+    render(<ActionItems pullRequests={prs} />);
+    expect(screen.getByText(/2 critical/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 warning/i)).toBeInTheDocument();
+  });
+
+  it("omits the warning pill when there are no warning items", () => {
+    render(<ActionItems pullRequests={[mockCriticalPR({ id: "c1" })]} />);
+    expect(screen.queryByText(/warning/i)).not.toBeInTheDocument();
   });
 });

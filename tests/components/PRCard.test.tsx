@@ -52,7 +52,8 @@ describe("PRCard", () => {
 
   it("shows approval count", () => {
     render(<PRCard pr={mockPR({ approvalCount: 2, requestedReviewerCount: 3 })} />);
-    expect(screen.getByText("2/3 ✓")).toBeInTheDocument();
+    const approvals = screen.getByTitle("Approvals");
+    expect(approvals.textContent).toContain("2/3");
   });
 
   it("truncates long titles", () => {
@@ -93,9 +94,9 @@ describe("PRCard", () => {
   it("shows CI button to expand CI details", () => {
     const pr = mockPR({ checkRuns: [mockCheckRun()] });
     render(<PRCard pr={pr} />);
-    const ciButton = screen.getByText("▼ Show CI");
+    const ciButton = screen.getByRole("button", { name: /show ci/i });
     expect(ciButton).toBeInTheDocument();
     fireEvent.click(ciButton);
-    expect(screen.getByText("▲ Hide CI")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /hide ci/i })).toBeInTheDocument();
   });
 });

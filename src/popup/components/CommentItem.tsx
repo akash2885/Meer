@@ -41,9 +41,7 @@ export function CommentItem({ comment }: CommentItemProps) {
       </div>
 
       {/* Comment body snippet */}
-      <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">
-        {truncate(comment.body, 120)}
-      </p>
+      <p className="text-xs text-slate-300 leading-relaxed line-clamp-3">{truncate(comment.body, 120)}</p>
 
       {/* Repo */}
       <p className="text-xs text-slate-500 mt-1">{comment.repo}</p>

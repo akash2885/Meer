@@ -100,11 +100,7 @@ export const useStore = create<PRDashStore>((set, get) => ({
       error: null,
       currentUser: null,
     });
-    chrome.storage.local.remove([
-      STORAGE_KEYS.pullRequests,
-      STORAGE_KEYS.lastFetched,
-      STORAGE_KEYS.currentUser,
-    ]);
+    chrome.storage.local.remove([STORAGE_KEYS.pullRequests, STORAGE_KEYS.lastFetched, STORAGE_KEYS.currentUser]);
   },
 
   setCurrentUser: (login: string) => {

@@ -8,13 +8,11 @@ import { PRList } from "./components/PRList";
 import { CommentFeed } from "./components/CommentFeed";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
+import { KeyIcon } from "./components/Icons";
 
 export type Tab = "actions" | "all" | "comments";
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; message: string }
-> {
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; message: string }> {
   constructor(props: { children: React.ReactNode }) {
     super(props);
     this.state = { hasError: false, message: "" };
@@ -46,15 +44,14 @@ export function App() {
   if (!settings.token) {
     return (
       <div className="w-[400px] bg-slate-900 flex flex-col items-center justify-center p-8 gap-4 min-h-[200px]">
-        <div className="text-4xl">🔑</div>
+        <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center">
+          <KeyIcon className="w-6 h-6 text-slate-300" />
+        </div>
         <div className="text-center">
           <p className="text-slate-100 font-medium">Welcome to PRDash</p>
           <p className="text-slate-400 text-sm mt-1">Add your GitHub token to get started</p>
         </div>
-        <button
-          onClick={() => chrome.runtime.openOptionsPage()}
-          className="btn-primary"
-        >
+        <button onClick={() => chrome.runtime.openOptionsPage()} className="btn-primary">
           Open Settings
         </button>
       </div>
@@ -67,11 +64,7 @@ export function App() {
   return (
     <ErrorBoundary>
       <div className="w-[400px] max-h-[550px] bg-slate-900 flex flex-col overflow-hidden">
-        <Header
-          lastFetched={lastFetched}
-          isLoading={isLoading}
-          onRefresh={fetchPRs}
-        />
+        <Header lastFetched={lastFetched} isLoading={isLoading} onRefresh={fetchPRs} />
         <TabNav
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -86,15 +79,9 @@ export function App() {
             <LoadingState />
           ) : (
             <>
-              {activeTab === "actions" && (
-                <ActionItems pullRequests={pullRequests} />
-              )}
-              {activeTab === "all" && (
-                <PRList pullRequests={pullRequests} />
-              )}
-              {activeTab === "comments" && (
-                <CommentFeed pullRequests={pullRequests} />
-              )}
+              {activeTab === "actions" && <ActionItems pullRequests={pullRequests} />}
+              {activeTab === "all" && <PRList pullRequests={pullRequests} />}
+              {activeTab === "comments" && <CommentFeed pullRequests={pullRequests} />}
             </>
           )}
         </div>

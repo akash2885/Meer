@@ -63,14 +63,23 @@ describe("GitHubClient", () => {
 
     it("deduplicates PRs appearing in both authored and reviewRequested", async () => {
       const rawPR = {
-        id: "PR_1", number: 1, title: "My PR", url: "https://github.com/org/repo/pull/1",
-        state: "OPEN", isDraft: false, mergeable: "MERGEABLE",
-        createdAt: "2026-04-12T10:00:00Z", updatedAt: "2026-04-13T10:00:00Z",
-        headRefName: "feature", baseRefName: "main",
+        id: "PR_1",
+        number: 1,
+        title: "My PR",
+        url: "https://github.com/org/repo/pull/1",
+        state: "OPEN",
+        isDraft: false,
+        mergeable: "MERGEABLE",
+        createdAt: "2026-04-12T10:00:00Z",
+        updatedAt: "2026-04-13T10:00:00Z",
+        headRefName: "feature",
+        baseRefName: "main",
         repository: { nameWithOwner: "org/repo", url: "https://github.com/org/repo" },
         author: { login: "testuser", avatarUrl: "https://avatars.githubusercontent.com/u/1" },
-        reviewRequests: { nodes: [] }, reviews: { nodes: [] },
-        reviewThreads: { nodes: [] }, comments: { nodes: [] },
+        reviewRequests: { nodes: [] },
+        reviews: { nodes: [] },
+        reviewThreads: { nodes: [] },
+        comments: { nodes: [] },
         commits: { nodes: [{ commit: { statusCheckRollup: null } }] },
       };
 
