@@ -82,11 +82,7 @@ export function App() {
             <LoadingState />
           ) : (
             <>
-              <RepoFilter
-                pullRequests={pullRequests}
-                selectedRepo={selectedRepo}
-                onSelect={setSelectedRepo}
-              />
+              <RepoFilter pullRequests={pullRequests} selectedRepo={selectedRepo} onSelect={setSelectedRepo} />
               {activeTab === "actions" && <ActionItems pullRequests={filteredPRs} />}
               {activeTab === "all" && <PRList pullRequests={filteredPRs} />}
               {activeTab === "comments" && <CommentFeed pullRequests={filteredPRs} />}
