@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import type { PullRequest } from "../../lib/types";
 import { timeAgo, truncate } from "../../lib/utils";
 import { CIStatus } from "./CIStatus";
-import { createClient } from "../../lib/github";
-import { useStore } from "../hooks/useStore";
+import { ReviewActions } from "./ReviewActions";
 import {
   CircleIcon,
   CancelIcon,
@@ -13,7 +12,6 @@ import {
   WarningIcon,
   ExpandMoreIcon,
   ExpandLessIcon,
-  DoneAllIcon,
   ArrowForwardIcon,
   ContentCopyIcon,
   CheckIcon,
@@ -22,6 +20,8 @@ import {
 interface PRCardProps {
   pr: PullRequest;
   showActionReason?: boolean;
+  expandedReviewCardId?: string | null;
+  setExpandedReviewCardId?: (id: string | null) => void;
 }
 
 function HealthBadge({ status }: { status: PullRequest["healthStatus"] }) {
@@ -70,33 +70,15 @@ function CIIcon({ pr }: { pr: PullRequest }) {
   );
 }
 
-export function PRCard({ pr, showActionReason = false }: PRCardProps) {
+export function PRCard({ pr, showActionReason = false, expandedReviewCardId, setExpandedReviewCardId }: PRCardProps) {
   const [expanded, setExpanded] = useState(false);
-  const [approving, setApproving] = useState(false);
-  const [approved, setApproved] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { settings, fetchPRs } = useStore();
+
+  const reviewIsOpen = expandedReviewCardId === pr.id;
 
   function openPR(e: React.MouseEvent) {
     e.preventDefault();
     chrome.tabs.create({ url: pr.url });
-  }
-
-  async function handleApprove(e: React.MouseEvent) {
-    e.stopPropagation();
-    if (!confirm(`Approve "${pr.title}"?`)) return;
-    const [owner, repo] = pr.repo.split("/");
-    setApproving(true);
-    try {
-      const client = createClient(settings);
-      await client.approvePR(owner, repo, pr.number);
-      setApproved(true);
-      fetchPRs();
-    } catch (err) {
-      console.error("Approve failed:", err);
-    } finally {
-      setApproving(false);
-    }
   }
 
   function handleCopyUrl(e: React.MouseEvent) {
@@ -213,25 +195,19 @@ export function PRCard({ pr, showActionReason = false }: PRCardProps) {
               <ContentCopyIcon className="w-3.5 h-3.5" />
             )}
           </button>
-
-          {pr.relationship !== "authored" && !approved && (
-            <button
-              onClick={handleApprove}
-              disabled={approving}
-              className="flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 disabled:opacity-50"
-            >
-              <DoneAllIcon className="w-3.5 h-3.5" />
-              {approving ? "Approving…" : "Approve"}
-            </button>
-          )}
-
-          {approved && (
-            <span className="flex items-center gap-1 text-xs text-emerald-400">
-              <CheckCircleFilledIcon className="w-3.5 h-3.5" /> Approved
-            </span>
-          )}
         </div>
       </div>
+
+      {pr.relationship !== "authored" && setExpandedReviewCardId && (
+        <div className="mt-2">
+          <ReviewActions
+            pr={pr}
+            isOpen={reviewIsOpen}
+            onOpen={() => setExpandedReviewCardId(pr.id)}
+            onClose={() => setExpandedReviewCardId(null)}
+          />
+        </div>
+      )}
 
       {expanded && (
         <div className="mt-2 pt-2 border-t border-slate-700" onClick={(e) => e.stopPropagation()}>
