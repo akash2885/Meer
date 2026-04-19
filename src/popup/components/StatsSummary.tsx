@@ -6,15 +6,7 @@ interface StatsSummaryProps {
   pullRequests: PullRequest[];
 }
 
-function StatPill({
-  value,
-  label,
-  colorClass,
-}: {
-  value: number;
-  label: string;
-  colorClass: string;
-}) {
+function StatPill({ value, label, colorClass }: { value: number; label: string; colorClass: string }) {
   return (
     <span className={`flex items-center gap-1 text-xs font-medium ${colorClass}`}>
       <span className="tabular-nums">{value}</span>
@@ -35,9 +27,7 @@ export function StatsSummary({ pullRequests }: StatsSummaryProps) {
     const failingCI = pullRequests.filter((p) =>
       p.checkRuns.some((c) => c.status === "COMPLETED" && c.conclusion === "FAILURE")
     ).length;
-    const stale = pullRequests.filter(
-      (p) => now - new Date(p.updatedAt).getTime() > staleMs
-    ).length;
+    const stale = pullRequests.filter((p) => now - new Date(p.updatedAt).getTime() > staleMs).length;
 
     return { open, needReview, failingCI, stale };
   }, [pullRequests]);
@@ -55,11 +45,7 @@ export function StatsSummary({ pullRequests }: StatsSummaryProps) {
         label="failing CI"
         colorClass={stats.failingCI > 0 ? "text-red-400" : "text-slate-500"}
       />
-      <StatPill
-        value={stats.stale}
-        label="stale"
-        colorClass={stats.stale > 0 ? "text-amber-400" : "text-slate-500"}
-      />
+      <StatPill value={stats.stale} label="stale" colorClass={stats.stale > 0 ? "text-amber-400" : "text-slate-500"} />
     </div>
   );
 }

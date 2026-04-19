@@ -69,17 +69,13 @@ describe("StatsSummary", () => {
 
   it("colors failing CI pill red when count > 0", () => {
     const { container } = render(
-      <StatsSummary
-        pullRequests={[mockPR({ checkRuns: [mockCheckRun({ conclusion: "FAILURE" })] })]}
-      />
+      <StatsSummary pullRequests={[mockPR({ checkRuns: [mockCheckRun({ conclusion: "FAILURE" })] })]} />
     );
     expect(container.querySelector(".text-red-400")).toBeInTheDocument();
   });
 
   it("colors need-review pill amber when count > 0", () => {
-    const { container } = render(
-      <StatsSummary pullRequests={[mockPR({ relationship: "review_requested" })]} />
-    );
+    const { container } = render(<StatsSummary pullRequests={[mockPR({ relationship: "review_requested" })]} />);
     expect(container.querySelector(".text-amber-400")).toBeInTheDocument();
   });
 });
