@@ -70,12 +70,7 @@ function CIIcon({ pr }: { pr: PullRequest }) {
   );
 }
 
-export function PRCard({
-  pr,
-  showActionReason = false,
-  expandedReviewCardId,
-  setExpandedReviewCardId,
-}: PRCardProps) {
+export function PRCard({ pr, showActionReason = false, expandedReviewCardId, setExpandedReviewCardId }: PRCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
 

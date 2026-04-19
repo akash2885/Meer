@@ -121,9 +121,7 @@ export function ReviewActions({ pr, isOpen, onOpen, onClose }: ReviewActionsProp
           onClick={(e) => toggleMode("comment", e)}
           title="Leave a comment"
           className={`flex items-center gap-1 text-xs transition-colors ${
-            isOpen && mode === "comment"
-              ? "text-blue-400"
-              : "text-slate-500 hover:text-slate-300"
+            isOpen && mode === "comment" ? "text-blue-400" : "text-slate-500 hover:text-slate-300"
           }`}
           aria-label="Leave a comment"
         >
@@ -135,9 +133,7 @@ export function ReviewActions({ pr, isOpen, onOpen, onClose }: ReviewActionsProp
           onClick={(e) => toggleMode("request_changes", e)}
           title="Request changes"
           className={`flex items-center gap-1 text-xs transition-colors ${
-            isOpen && mode === "request_changes"
-              ? "text-amber-400"
-              : "text-slate-500 hover:text-slate-300"
+            isOpen && mode === "request_changes" ? "text-amber-400" : "text-slate-500 hover:text-slate-300"
           }`}
           aria-label="Request changes"
         >
@@ -165,10 +161,7 @@ export function ReviewActions({ pr, isOpen, onOpen, onClose }: ReviewActionsProp
             >
               {submitting ? "Submitting…" : mode === "comment" ? "Submit comment" : "Request changes"}
             </button>
-            <button
-              onClick={handleCancel}
-              className="text-xs px-2 py-1 rounded text-slate-500 hover:text-slate-300"
-            >
+            <button onClick={handleCancel} className="text-xs px-2 py-1 rounded text-slate-500 hover:text-slate-300">
               Cancel
             </button>
           </div>

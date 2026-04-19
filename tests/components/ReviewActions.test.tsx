@@ -35,18 +35,14 @@ describe("ReviewActions", () => {
   });
 
   it("shows textarea when isOpen=true after mode is set", () => {
-    const { rerender } = render(
-      <ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />
-    );
+    const { rerender } = render(<ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: /leave a comment/i }));
     rerender(<ReviewActions pr={pr} isOpen={true} onOpen={vi.fn()} onClose={vi.fn()} />);
     expect(screen.getByRole("textbox", { name: /comment body/i })).toBeInTheDocument();
   });
 
   it("submit button disabled when textarea is empty", () => {
-    const { rerender } = render(
-      <ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />
-    );
+    const { rerender } = render(<ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: /leave a comment/i }));
     rerender(<ReviewActions pr={pr} isOpen={true} onOpen={vi.fn()} onClose={vi.fn()} />);
     const submitBtn = screen.getByRole("button", { name: /submit comment/i });
@@ -54,9 +50,7 @@ describe("ReviewActions", () => {
   });
 
   it("enables submit when textarea has text", () => {
-    const { rerender } = render(
-      <ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />
-    );
+    const { rerender } = render(<ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: /leave a comment/i }));
     rerender(<ReviewActions pr={pr} isOpen={true} onOpen={vi.fn()} onClose={vi.fn()} />);
     fireEvent.change(screen.getByRole("textbox", { name: /comment body/i }), {
@@ -70,9 +64,7 @@ describe("ReviewActions", () => {
     const submitMock = vi.fn().mockResolvedValue(undefined);
     (createClient as ReturnType<typeof vi.fn>).mockReturnValue({ submitReview: submitMock });
 
-    const { rerender } = render(
-      <ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />
-    );
+    const { rerender } = render(<ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: /leave a comment/i }));
     rerender(<ReviewActions pr={pr} isOpen={true} onOpen={vi.fn()} onClose={vi.fn()} />);
     fireEvent.change(screen.getByRole("textbox", { name: /comment body/i }), {
@@ -85,9 +77,7 @@ describe("ReviewActions", () => {
   });
 
   it("shows request-changes textarea with correct placeholder", () => {
-    const { rerender } = render(
-      <ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />
-    );
+    const { rerender } = render(<ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: /request changes/i }));
     rerender(<ReviewActions pr={pr} isOpen={true} onOpen={vi.fn()} onClose={vi.fn()} />);
     expect(screen.getByRole("textbox", { name: /request changes body/i })).toBeInTheDocument();
@@ -95,9 +85,7 @@ describe("ReviewActions", () => {
 
   it("calls onClose when Cancel is clicked", () => {
     const onClose = vi.fn();
-    const { rerender } = render(
-      <ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={onClose} />
-    );
+    const { rerender } = render(<ReviewActions pr={pr} isOpen={false} onOpen={vi.fn()} onClose={onClose} />);
     fireEvent.click(screen.getByRole("button", { name: /leave a comment/i }));
     rerender(<ReviewActions pr={pr} isOpen={true} onOpen={vi.fn()} onClose={onClose} />);
     fireEvent.click(screen.getByRole("button", { name: /cancel/i }));
