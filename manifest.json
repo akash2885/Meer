@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PRDash",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Developer-focused pull request dashboard — see what needs your attention without opening GitHub.",
   "permissions": ["storage", "alarms", "notifications"],
   "host_permissions": ["https://api.github.com/*", "https://*/*", "http://localhost/*"],
