@@ -86,3 +86,5 @@ export const STORAGE_KEYS = {
 } as const;
 
 export const MAX_PRS_PER_QUERY = 30;
+
+export const STALE_THRESHOLD_DAYS = 7;

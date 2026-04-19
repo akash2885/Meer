@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useChromeStorage } from "./hooks/useChromeStorage";
 import { useStore } from "./hooks/useStore";
 import { Header } from "./components/Header";
+import { StatsSummary } from "./components/StatsSummary";
 import { TabNav } from "./components/TabNav";
 import { ActionItems } from "./components/ActionItems";
 import { PRList } from "./components/PRList";
@@ -65,6 +66,7 @@ export function App() {
     <ErrorBoundary>
       <div className="w-[400px] max-h-[550px] bg-slate-900 flex flex-col overflow-hidden">
         <Header lastFetched={lastFetched} isLoading={isLoading} onRefresh={fetchPRs} />
+        <StatsSummary pullRequests={pullRequests} />
         <TabNav
           activeTab={activeTab}
           onTabChange={setActiveTab}
