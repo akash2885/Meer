@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { PullRequest } from "../../lib/types";
 import { PRCard } from "./PRCard";
 import { EmptyState } from "./EmptyState";
@@ -8,6 +8,8 @@ interface PRListProps {
 }
 
 export function PRList({ pullRequests }: PRListProps) {
+  const [expandedReviewCardId, setExpandedReviewCardId] = useState<string | null>(null);
+
   if (pullRequests.length === 0) {
     return <EmptyState icon="🎉" title="No open pull requests" subtitle="You have no open PRs right now" />;
   }
@@ -16,7 +18,12 @@ export function PRList({ pullRequests }: PRListProps) {
   return (
     <div className="p-3 space-y-2">
       {pullRequests.map((pr) => (
-        <PRCard key={pr.id} pr={pr} />
+        <PRCard
+          key={pr.id}
+          pr={pr}
+          expandedReviewCardId={expandedReviewCardId}
+          setExpandedReviewCardId={setExpandedReviewCardId}
+        />
       ))}
     </div>
   );

@@ -153,6 +153,16 @@ export class GitHubClient {
   }
 
   async approvePR(owner: string, repo: string, pullNumber: number): Promise<void> {
+    await this.submitReview(owner, repo, pullNumber, "APPROVE");
+  }
+
+  async submitReview(
+    owner: string,
+    repo: string,
+    pullNumber: number,
+    event: "APPROVE" | "COMMENT" | "REQUEST_CHANGES",
+    body = ""
+  ): Promise<void> {
     const url = `${this.restUrl}/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`;
     const response = await fetch(url, {
       method: "POST",
@@ -162,10 +172,10 @@ export class GitHubClient {
         "User-Agent": "PRDash-Extension/1.0",
         Accept: "application/vnd.github+json",
       },
-      body: JSON.stringify({ event: "APPROVE", body: "" }),
+      body: JSON.stringify({ event, body }),
     });
     if (!response.ok) {
-      throw new GitHubNetworkError(`Failed to approve PR: ${response.status}`);
+      throw new GitHubNetworkError(`Failed to submit review: ${response.status}`);
     }
   }
 }
