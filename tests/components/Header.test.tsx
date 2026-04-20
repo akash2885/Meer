@@ -12,7 +12,7 @@ beforeEach(() => {
 describe("Header", () => {
   it("shows app name", () => {
     render(<Header lastFetched={null} isLoading={false} onRefresh={vi.fn()} />);
-    expect(screen.getByText("PRDash")).toBeInTheDocument();
+    expect(screen.getByText("Meer")).toBeInTheDocument();
   });
 
   it("shows last updated time when lastFetched is set", () => {

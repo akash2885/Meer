@@ -47,7 +47,7 @@ export class GitHubClient {
       headers: {
         Authorization: `Bearer ${this.token}`,
         "Content-Type": "application/json",
-        "User-Agent": "PRDash-Extension/1.0",
+        "User-Agent": "Meer-Extension/1.0",
       },
       body: JSON.stringify({ query, variables }),
     });
@@ -143,7 +143,7 @@ export class GitHubClient {
       method: "POST",
       headers: {
         Authorization: `Bearer ${this.token}`,
-        "User-Agent": "PRDash-Extension/1.0",
+        "User-Agent": "Meer-Extension/1.0",
         Accept: "application/vnd.github+json",
       },
     });
@@ -169,7 +169,7 @@ export class GitHubClient {
       headers: {
         Authorization: `Bearer ${this.token}`,
         "Content-Type": "application/json",
-        "User-Agent": "PRDash-Extension/1.0",
+        "User-Agent": "Meer-Extension/1.0",
         Accept: "application/vnd.github+json",
       },
       body: JSON.stringify({ event, body }),

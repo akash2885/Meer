@@ -1,4 +1,4 @@
-# PRDash
+# Meer
 
 A developer-focused Chrome extension that gives you a clean pull request dashboard without opening GitHub. See exactly what needs your attention, track CI status, and manage review requests — all from the browser toolbar.
 
@@ -24,7 +24,7 @@ The extension is loaded as an unpacked extension during development. There is no
 
 ```bash
 git clone https://github.com/akash2885/prdash.git
-cd prdash
+cd meer # (or whatever your local folder is named)
 npm install
 npm run build
 ```
@@ -38,7 +38,7 @@ This produces a `dist/` folder containing the built extension.
 3. Click **Load unpacked**
 4. Select the `dist/` folder inside the cloned repo
 
-The PRDash icon will appear in your Chrome toolbar. Pin it for easy access.
+The Meer icon will appear in your Chrome toolbar. Pin it for easy access.
 
 ### Running in development mode
 
@@ -50,29 +50,29 @@ Vite starts a local dev server. Load the `dist/` folder as an unpacked extension
 
 ## Setup
 
-After installing, click the PRDash icon and then **Open Settings** (or right-click the icon → **Options**).
+After installing, click the Meer icon and then **Open Settings** (or right-click the icon → **Options**).
 
 ### GitHub Token
 
-PRDash needs a **Classic Personal Access Token** (PATs, not fine-grained tokens).
+Meer needs a **Classic Personal Access Token** (PATs, not fine-grained tokens).
 
 1. Go to **GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)**
 2. Click **Generate new token (classic)**
-3. Give it a name (e.g. `prdash`) and select the following scopes:
+3. Give it a name (e.g. `meer`) and select the following scopes:
    - `repo` — read PR data, CI checks, review status
    - `read:user` — look up your own username
-4. Copy the token and paste it into the **Personal Access Token** field in PRDash Settings
+4. Copy the token and paste it into the **Personal Access Token** field in Meer Settings
 5. Click **Validate** to confirm it works, then **Save Settings**
 
 > The token is stored locally in Chrome storage and is never sent anywhere except GitHub's API.
 
 ### GitHub Enterprise
 
-If your organisation uses GitHub Enterprise Server, change the **GitHub Base URL** field from `https://api.github.com` to your instance's URL (e.g. `https://github.acme.corp`). PRDash will automatically route API calls to `<base-url>/api/graphql` and `<base-url>/api/v3/...`.
+If your organisation uses GitHub Enterprise Server, change the **GitHub Base URL** field from `https://api.github.com` to your instance's URL (e.g. `https://github.acme.corp`). Meer will automatically route API calls to `<base-url>/api/graphql` and `<base-url>/api/v3/...`.
 
 ## Using the Extension
 
-Click the PRDash icon in your toolbar to open the popup. Three tabs are available:
+Click the Meer icon in your toolbar to open the popup. Three tabs are available:
 
 ### Actions tab
 
@@ -105,7 +105,7 @@ Resolved threads are hidden by default — toggle **Show resolved** to see them.
 |---|---|
 | Personal Access Token | Classic PAT with `repo` + `read:user` scopes |
 | GitHub Base URL | Change this for GitHub Enterprise Server |
-| Refresh Interval | How often PRDash polls the GitHub API (1 min – 1 hr) |
+| Refresh Interval | How often Meer polls the GitHub API (1 min – 1 hr) |
 | CI check completed | Desktop notification when a check finishes |
 | New review comments | Notification when someone comments on your PR |
 | PR approved | Notification when your PR receives an approval |

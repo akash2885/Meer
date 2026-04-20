@@ -125,7 +125,7 @@ export function Options() {
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">PRDash Settings</h1>
+          <h1 className="text-2xl font-bold text-slate-100">Meer Settings</h1>
           <p className="text-slate-400 text-sm mt-1">Configure your GitHub PR dashboard</p>
         </div>
 
