@@ -1,5 +1,5 @@
 /**
- * PRDash Background Service Worker (Manifest V3)
+ * Meer Background Service Worker (Manifest V3)
  *
  * Responsibilities:
  * - Schedule periodic polling via chrome.alarms (NOT setInterval)
@@ -102,7 +102,7 @@ async function handlePoll(): Promise<void> {
       });
       await storageSet("prdash_rate_limit_warning", err.message);
     } else {
-      console.error("[PRDash SW] Poll error:", err);
+      console.error("[Meer SW] Poll error:", err);
     }
   }
 }

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to PRDash are documented here.
+All notable changes to Meer are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -69,7 +69,7 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Initial release of PRDash Chrome extension (Manifest V3)
+- Initial release of Meer Chrome extension (Manifest V3)
 - Three-tab popup UI: **Action Items**, **All PRs**, **Comments**
 - GitHub GraphQL API v4 integration — single-query fetch of authored + review-requested PRs including reviews, review threads, comments, CI check runs, and merge status
 - Zustand store persisted to `chrome.storage.local`, kept in sync with `useChromeStorage` hook
