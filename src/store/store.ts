@@ -27,14 +27,15 @@ async function storageSet(key: string, value: unknown): Promise<void> {
  * Hydrate store from chrome.storage.local. Called once on initialization.
  */
 export async function hydrateStore(): Promise<Partial<PRDashStore>> {
-  const [settings, pullRequests, lastFetched, currentUser] = await Promise.all([
+  const [settings, pullRequests, lastFetched, currentUser, selectedRepo] = await Promise.all([
     storageGet<Settings>(STORAGE_KEYS.settings, DEFAULT_SETTINGS),
     storageGet<PullRequest[]>(STORAGE_KEYS.pullRequests, []),
     storageGet<number | null>(STORAGE_KEYS.lastFetched, null),
     storageGet<string | null>(STORAGE_KEYS.currentUser, null),
+    storageGet<string | null>(STORAGE_KEYS.selectedRepo, null),
   ]);
 
-  return { settings, pullRequests, lastFetched, currentUser };
+  return { settings, pullRequests, lastFetched, currentUser, selectedRepo };
 }
 
 export const useStore = create<PRDashStore>((set, get) => ({
@@ -45,6 +46,7 @@ export const useStore = create<PRDashStore>((set, get) => ({
   isLoading: false,
   error: null,
   currentUser: null,
+  selectedRepo: null,
 
   // ── Actions ────────────────────────────────────────────────────────────────
 
@@ -72,7 +74,15 @@ export const useStore = create<PRDashStore>((set, get) => ({
       const pullRequests = await client.fetchPullRequests(currentUser, settings.priorityKeywords);
       const lastFetched = Date.now();
 
-      set({ pullRequests, lastFetched, isLoading: false });
+      // Auto-clear repo filter if the selected repo is no longer in the data
+      const { selectedRepo } = get();
+      const repoSet = new Set(pullRequests.map((p) => p.repo));
+      const nextSelectedRepo = selectedRepo && !repoSet.has(selectedRepo) ? null : selectedRepo;
+
+      set({ pullRequests, lastFetched, isLoading: false, selectedRepo: nextSelectedRepo });
+      if (nextSelectedRepo !== selectedRepo) {
+        await storageSet(STORAGE_KEYS.selectedRepo, null);
+      }
 
       // Persist to storage
       await Promise.all([
@@ -99,13 +109,24 @@ export const useStore = create<PRDashStore>((set, get) => ({
       lastFetched: null,
       error: null,
       currentUser: null,
+      selectedRepo: null,
     });
-    chrome.storage.local.remove([STORAGE_KEYS.pullRequests, STORAGE_KEYS.lastFetched, STORAGE_KEYS.currentUser]);
+    chrome.storage.local.remove([
+      STORAGE_KEYS.pullRequests,
+      STORAGE_KEYS.lastFetched,
+      STORAGE_KEYS.currentUser,
+      STORAGE_KEYS.selectedRepo,
+    ]);
   },
 
   setCurrentUser: (login: string) => {
     set({ currentUser: login });
     storageSet(STORAGE_KEYS.currentUser, login).catch(console.error);
+  },
+
+  setSelectedRepo: (repo: string | null) => {
+    set({ selectedRepo: repo });
+    storageSet(STORAGE_KEYS.selectedRepo, repo).catch(console.error);
   },
 }));
 

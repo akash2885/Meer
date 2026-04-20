@@ -106,11 +106,13 @@ export interface PRDashStore {
   isLoading: boolean;
   error: string | null;
   currentUser: string | null;
+  selectedRepo: string | null;
   // Actions
   fetchPRs: () => Promise<void>;
   updateSettings: (settings: Partial<Settings>) => void;
   clearData: () => void;
   setCurrentUser: (login: string) => void;
+  setSelectedRepo: (repo: string | null) => void;
 }
 
 // ─── GitHub API Raw Types ────────────────────────────────────────────────────

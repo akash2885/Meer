@@ -153,6 +153,16 @@ export class GitHubClient {
   }
 
   async approvePR(owner: string, repo: string, pullNumber: number): Promise<void> {
+    await this.submitReview(owner, repo, pullNumber, "APPROVE");
+  }
+
+  async submitReview(
+    owner: string,
+    repo: string,
+    pullNumber: number,
+    event: "APPROVE" | "COMMENT" | "REQUEST_CHANGES",
+    body = ""
+  ): Promise<void> {
     const url = `${this.restUrl}/repos/${owner}/${repo}/pulls/${pullNumber}/reviews`;
     const response = await fetch(url, {
       method: "POST",
@@ -162,10 +172,10 @@ export class GitHubClient {
         "User-Agent": "PRDash-Extension/1.0",
         Accept: "application/vnd.github+json",
       },
-      body: JSON.stringify({ event: "APPROVE", body: "" }),
+      body: JSON.stringify({ event, body }),
     });
     if (!response.ok) {
-      throw new GitHubNetworkError(`Failed to approve PR: ${response.status}`);
+      throw new GitHubNetworkError(`Failed to submit review: ${response.status}`);
     }
   }
 }
@@ -192,7 +202,6 @@ function transformPR(
     raw.url,
     raw.repository.nameWithOwner
   );
-  const comments = transformComments(raw, currentUser, keywords, raw.title, raw.url, raw.repository.nameWithOwner);
   const allComments = mergeAllComments(raw, reviewThreads, currentUser, keywords);
 
   const approvalCount = reviews.filter((r) => r.state === "APPROVED").length;
@@ -308,43 +317,6 @@ function transformReviewThreads(
       } satisfies Comment;
     }),
   }));
-}
-
-function transformComments(
-  raw: RawPullRequest,
-  currentUser: string,
-  keywords: PriorityKeywords,
-  prTitle: string,
-  prUrl: string,
-  repo: string
-): Comment[] {
-  return (raw.comments?.nodes ?? []).map((c) => {
-    const score = scoreComment({
-      body: c.body,
-      createdAt: c.createdAt,
-      author: c.author.login,
-      isInUnresolvedThread: false,
-      reviewState: undefined,
-      isFromCodeowner: false,
-      mentionsCurrentUser: c.body.toLowerCase().includes(`@${currentUser.toLowerCase()}`),
-      keywords,
-    });
-    return {
-      id: generateCommentId(c.url, c.body),
-      body: c.body,
-      author: c.author.login,
-      createdAt: c.createdAt,
-      url: c.url,
-      prTitle,
-      prUrl,
-      repo,
-      priorityScore: score.score,
-      priorityLevel: getPriorityLevel(score.score),
-      isResolved: false,
-      isFromCodeowner: false,
-      mentionsCurrentUser: c.body.toLowerCase().includes(`@${currentUser.toLowerCase()}`),
-    } satisfies Comment;
-  });
 }
 
 function mergeAllComments(
@@ -468,7 +440,7 @@ function computeHealth(
   hasRunningCI: boolean,
   isConflicting: boolean,
   approvalCount: number,
-  reviews: Review[]
+  _reviews: Review[]
 ): { healthStatus: "good" | "warning" | "critical"; myActionRequired: boolean; actionReason?: string } {
   if (hasChangesRequested || hasFailingCI || isConflicting) {
     let actionReason: string | undefined;

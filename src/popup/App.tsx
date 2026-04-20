@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useChromeStorage } from "./hooks/useChromeStorage";
 import { useStore } from "./hooks/useStore";
 import { Header } from "./components/Header";
+import { StatsSummary } from "./components/StatsSummary";
 import { TabNav } from "./components/TabNav";
+import { RepoFilter } from "./components/RepoFilter";
 import { ActionItems } from "./components/ActionItems";
 import { PRList } from "./components/PRList";
 import { CommentFeed } from "./components/CommentFeed";
@@ -38,7 +40,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 export function App() {
   useChromeStorage();
   const [activeTab, setActiveTab] = useState<Tab>("actions");
-  const { pullRequests, isLoading, error, lastFetched, fetchPRs, settings } = useStore();
+  const { pullRequests, isLoading, error, lastFetched, fetchPRs, settings, selectedRepo, setSelectedRepo } = useStore();
 
   // If no token is configured, prompt user to open settings
   if (!settings.token) {
@@ -58,18 +60,21 @@ export function App() {
     );
   }
 
-  const actionCount = pullRequests.filter((p) => p.myActionRequired).length;
-  const commentCount = pullRequests.reduce((sum, p) => sum + p.comments.length, 0);
+  const filteredPRs = selectedRepo ? pullRequests.filter((p) => p.repo === selectedRepo) : pullRequests;
+
+  const actionCount = filteredPRs.filter((p) => p.myActionRequired).length;
+  const commentCount = filteredPRs.reduce((sum, p) => sum + p.comments.length, 0);
 
   return (
     <ErrorBoundary>
       <div className="w-[400px] max-h-[550px] bg-slate-900 flex flex-col overflow-hidden">
         <Header lastFetched={lastFetched} isLoading={isLoading} onRefresh={fetchPRs} />
+        <StatsSummary pullRequests={pullRequests} />
         <TabNav
           activeTab={activeTab}
           onTabChange={setActiveTab}
           actionCount={actionCount}
-          allCount={pullRequests.length}
+          allCount={filteredPRs.length}
           commentCount={commentCount}
         />
         <div className="flex-1 overflow-y-auto min-h-0">
@@ -79,9 +84,10 @@ export function App() {
             <LoadingState />
           ) : (
             <>
-              {activeTab === "actions" && <ActionItems pullRequests={pullRequests} />}
-              {activeTab === "all" && <PRList pullRequests={pullRequests} />}
-              {activeTab === "comments" && <CommentFeed pullRequests={pullRequests} />}
+              <RepoFilter pullRequests={pullRequests} selectedRepo={selectedRepo} onSelect={setSelectedRepo} />
+              {activeTab === "actions" && <ActionItems pullRequests={filteredPRs} />}
+              {activeTab === "all" && <PRList pullRequests={filteredPRs} />}
+              {activeTab === "comments" && <CommentFeed pullRequests={filteredPRs} />}
             </>
           )}
         </div>

@@ -83,6 +83,9 @@ export const STORAGE_KEYS = {
   lastFetched: "prdash_last_fetched",
   currentUser: "prdash_current_user",
   seenNotifications: "prdash_seen_notifications",
+  selectedRepo: "prdash_selected_repo",
 } as const;
 
 export const MAX_PRS_PER_QUERY = 30;
+
+export const STALE_THRESHOLD_DAYS = 7;

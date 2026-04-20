@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { PullRequest } from "../../lib/types";
 import { PRCard } from "./PRCard";
 import { EmptyState } from "./EmptyState";
@@ -19,6 +19,7 @@ function SummaryPill({ label, count, colour }: { label: string; count: number; c
 }
 
 export function ActionItems({ pullRequests }: ActionItemsProps) {
+  const [expandedReviewCardId, setExpandedReviewCardId] = useState<string | null>(null);
   const actionItems = pullRequests.filter((pr) => pr.myActionRequired);
 
   if (actionItems.length === 0) {
@@ -53,7 +54,13 @@ export function ActionItems({ pullRequests }: ActionItemsProps) {
 
       <div className="p-3 space-y-2">
         {sorted.map((pr) => (
-          <PRCard key={pr.id} pr={pr} showActionReason />
+          <PRCard
+            key={pr.id}
+            pr={pr}
+            showActionReason
+            expandedReviewCardId={expandedReviewCardId}
+            setExpandedReviewCardId={setExpandedReviewCardId}
+          />
         ))}
       </div>
     </div>
