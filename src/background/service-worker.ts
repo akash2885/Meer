@@ -109,7 +109,7 @@ async function handlePoll(): Promise<void> {
 
 // ─── Change Detection ─────────────────────────────────────────────────────────
 
-function detectChanges(previous: PullRequest[], fresh: PullRequest[], currentUser: string): NotificationEvent[] {
+function detectChanges(previous: PullRequest[], fresh: PullRequest[], _currentUser: string): NotificationEvent[] {
   const events: NotificationEvent[] = [];
   const prevMap = new Map(previous.map((p) => [p.id, p]));
 

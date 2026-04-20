@@ -11,6 +11,26 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.2.0] - 2026-04-19
+
+### Added
+
+- **Quick Stats Summary Bar** — persistent bar between the header and tab nav showing open · need review · failing CI · stale counts at a glance; amber coloring when need-review or stale count > 0, red when failing CI count > 0; stale threshold is 7 days (`STALE_THRESHOLD_DAYS` constant)
+- **Per-Repo Filtering** — dropdown above tab content lets users scope all three views (Actions, All PRs, Comments) to a single repository; repos listed alphabetically with PR counts; selection persisted to `chrome.storage.local`; filter auto-clears if the selected repo disappears from data on next fetch
+- **Three-Action Review Panel** — replaces the single Approve button with Approve / Comment / Request Changes buttons on every reviewable PR card; Comment and Request Changes expand an inline textarea; only one card's panel can be open at a time; backed by new `GitHubClient.submitReview()` REST method
+
+### Changed
+
+- `GitHubClient.approvePR()` now delegates to `submitReview()`, eliminating duplicated fetch logic
+- Tab badge counts (Actions, All PRs, Comments) reflect the active repo filter when one is selected
+
+### Fixed
+
+- Removed unused `transformComments` function (dead code since `mergeAllComments` handles all comment sources)
+- Prefixed unused `currentUser` parameter in `detectChanges` and unused `reviews` parameter in `computeHealth` to satisfy the `no-unused-vars` lint rule
+
+---
+
 ## [1.1.0] - 2026-04-14
 
 ### Added
