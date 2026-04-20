@@ -50,7 +50,7 @@ export function App() {
           <KeyIcon className="w-6 h-6 text-slate-300" />
         </div>
         <div className="text-center">
-          <p className="text-slate-100 font-medium">Welcome to Meer</p>
+          <p className="text-slate-100 font-medium">Welcome to PRDash</p>
           <p className="text-slate-400 text-sm mt-1">Add your GitHub token to get started</p>
         </div>
         <button onClick={() => chrome.runtime.openOptionsPage()} className="btn-primary">

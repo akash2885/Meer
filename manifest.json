@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Meer",
+  "name": "PRDash",
   "version": "1.2.0",
   "description": "Developer-focused pull request dashboard — see what needs your attention without opening GitHub.",
   "permissions": ["storage", "alarms", "notifications"],
