@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy Policy — Meer</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --surface: #1e293b;
+        --border: #334155;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #3b82f6;
+        --accent-dim: #1d4ed8;
+        --green: #4ade80;
+        --radius: 10px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-size: 16px;
+        line-height: 1.7;
+        min-height: 100vh;
+      }
+
+      header {
+        border-bottom: 1px solid var(--border);
+        padding: 20px 0;
+      }
+
+      header .inner {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+
+      header h1 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      header span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+      }
+
+      .hero {
+        margin-bottom: 48px;
+      }
+
+      .hero h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #052e16;
+        color: var(--green);
+        border: 1px solid #166534;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 20px;
+      }
+
+      .badge svg {
+        flex-shrink: 0;
+      }
+
+      section {
+        margin-bottom: 36px;
+      }
+
+      h3 {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      p {
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+
+      ul {
+        color: var(--muted);
+        padding-left: 20px;
+        margin-bottom: 12px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        margin-top: 16px;
+      }
+
+      .card-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      .card-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      .card-row:first-child {
+        padding-top: 0;
+      }
+
+      .card-label {
+        color: var(--text);
+        font-weight: 500;
+        flex-shrink: 0;
+        min-width: 140px;
+      }
+
+      .card-value {
+        color: var(--muted);
+        text-align: right;
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .pill-green {
+        background: #052e16;
+        color: var(--green);
+        border: 1px solid #166534;
+      }
+
+      .pill-blue {
+        background: #1e3a5f;
+        color: #93c5fd;
+        border: 1px solid #1d4ed8;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      footer a {
+        color: var(--muted);
+      }
+
+      footer a:hover {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="inner">
+        <div class="logo">🦫</div>
+        <div>
+          <h1>Meer</h1>
+          <span>Chrome Extension</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="hero">
+        <div class="badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+          </svg>
+          No tracking. No servers. No third parties.
+        </div>
+        <h2>Privacy Policy</h2>
+        <p>Last updated: April 25, 2026</p>
+      </div>
+
+      <section>
+        <h3>Overview</h3>
+        <p>
+          Meer is a browser extension that displays your GitHub pull requests in a popup. All data
+          stays on your device. We operate no backend servers, collect no analytics, and share
+          nothing with third parties.
+        </p>
+      </section>
+
+      <section>
+        <h3>What data Meer stores</h3>
+        <p>
+          Everything Meer stores lives in <code>chrome.storage.local</code> — your browser's
+          local storage, accessible only to this extension on this device.
+        </p>
+        <div class="card">
+          <div class="card-row">
+            <span class="card-label">GitHub token</span>
+            <span class="card-value"
+              >Stored locally. Used only to authenticate requests to GitHub's
+              API.</span
+            >
+          </div>
+          <div class="card-row">
+            <span class="card-label">PR data</span>
+            <span class="card-value"
+              >Titles, URLs, review states, CI status, and comments fetched from
+              GitHub. Cached locally between polls.</span
+            >
+          </div>
+          <div class="card-row">
+            <span class="card-label">Settings</span>
+            <span class="card-value"
+              >Polling interval, notification preferences, repository list,
+              priority keywords.</span
+            >
+          </div>
+          <div class="card-row">
+            <span class="card-label">Selected repo filter</span>
+            <span class="card-value">The last repo filter you picked. Stored locally.</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3>How data is used</h3>
+        <ul>
+          <li>Your GitHub token is sent only to <strong>api.github.com</strong> to fetch your pull requests and post comments or reviews on your behalf.</li>
+          <li>PR data is displayed in the extension popup and used to generate desktop notifications when configured.</li>
+          <li>Nothing is sent to any server other than GitHub's own API.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Data flow</h3>
+        <div class="card">
+          <div class="card-row">
+            <span class="card-label">Your device</span>
+            <span class="card-value"><span class="pill pill-green">chrome.storage.local</span></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">External requests</span>
+            <span class="card-value"><span class="pill pill-blue">api.github.com only</span></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Third-party servers</span>
+            <span class="card-value"><span class="pill pill-green">None</span></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Analytics / telemetry</span>
+            <span class="card-value"><span class="pill pill-green">None</span></span>
+          </div>
+          <div class="card-row">
+            <span class="card-label">Crash reporting</span>
+            <span class="card-value"><span class="pill pill-green">None</span></span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3>Permissions explained</h3>
+        <ul>
+          <li><strong>storage</strong> — saves your token and settings to local browser storage.</li>
+          <li><strong>alarms</strong> — wakes up the background service worker on your configured polling interval to refresh PR data.</li>
+          <li><strong>notifications</strong> — shows desktop alerts for new review requests, CI failures, or approvals when enabled.</li>
+          <li><strong>api.github.com</strong> — the only external host the extension communicates with.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Data retention and deletion</h3>
+        <p>
+          All locally stored data (token, settings, cached PR data) is automatically deleted when
+          you remove the extension from Chrome. You can also clear it manually at any time from the
+          extension's Settings page.
+        </p>
+      </section>
+
+      <section>
+        <h3>Children's privacy</h3>
+        <p>
+          Meer is a developer tool intended for adults. It does not knowingly collect any data from
+          anyone under the age of 13.
+        </p>
+      </section>
+
+      <section>
+        <h3>Changes to this policy</h3>
+        <p>
+          If this policy changes materially, the updated version will be committed to the
+          <a href="https://github.com/akash2885/prdash" target="_blank" rel="noopener">GitHub repository</a>
+          with a dated changelog entry. The "Last updated" date at the top of this page will
+          reflect any revision.
+        </p>
+      </section>
+
+      <section>
+        <h3>Contact</h3>
+        <p>
+          Questions or concerns? Open an issue on
+          <a href="https://github.com/akash2885/prdash/issues" target="_blank" rel="noopener"
+            >GitHub</a
+          >.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Meer Chrome Extension &mdash;
+        <a href="https://github.com/akash2885/prdash" target="_blank" rel="noopener">Source code</a>
+        &mdash; MIT License
+      </p>
+    </footer>
+  </body>
+</html>
