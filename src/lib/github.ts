@@ -47,7 +47,7 @@ export class GitHubClient {
       headers: {
         Authorization: `Bearer ${this.token}`,
         "Content-Type": "application/json",
-        "User-Agent": "PRDash-Extension/1.0",
+        "User-Agent": "Meer-Extension/1.0",
       },
       body: JSON.stringify({ query, variables }),
     });
@@ -143,7 +143,7 @@ export class GitHubClient {
       method: "POST",
       headers: {
         Authorization: `Bearer ${this.token}`,
-        "User-Agent": "PRDash-Extension/1.0",
+        "User-Agent": "Meer-Extension/1.0",
         Accept: "application/vnd.github+json",
       },
     });
@@ -154,6 +154,23 @@ export class GitHubClient {
 
   async approvePR(owner: string, repo: string, pullNumber: number): Promise<void> {
     await this.submitReview(owner, repo, pullNumber, "APPROVE");
+  }
+
+  async addPRComment(owner: string, repo: string, pullNumber: number, body: string): Promise<void> {
+    const url = `${this.restUrl}/repos/${owner}/${repo}/issues/${pullNumber}/comments`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "Meer-Extension/1.0",
+        Accept: "application/vnd.github+json",
+      },
+      body: JSON.stringify({ body }),
+    });
+    if (!response.ok) {
+      throw new GitHubNetworkError(`Failed to post comment: ${response.status}`);
+    }
   }
 
   async submitReview(
@@ -169,7 +186,7 @@ export class GitHubClient {
       headers: {
         Authorization: `Bearer ${this.token}`,
         "Content-Type": "application/json",
-        "User-Agent": "PRDash-Extension/1.0",
+        "User-Agent": "Meer-Extension/1.0",
         Accept: "application/vnd.github+json",
       },
       body: JSON.stringify({ event, body }),
