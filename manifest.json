@@ -4,7 +4,7 @@
   "version": "1.4.0",
   "description": "Developer-focused pull request dashboard — see what needs your attention without opening GitHub.",
   "permissions": ["storage", "alarms", "notifications"],
-  "host_permissions": ["https://api.github.com/*", "https://*/*", "http://localhost/*"],
+  "host_permissions": ["https://api.github.com/*"],
   "action": {
     "default_popup": "src/popup/index.html",
     "default_icon": {
