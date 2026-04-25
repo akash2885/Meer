@@ -7,12 +7,11 @@ import { TabNav } from "./components/TabNav";
 import { RepoFilter } from "./components/RepoFilter";
 import { ActionItems } from "./components/ActionItems";
 import { PRList } from "./components/PRList";
-import { CommentFeed } from "./components/CommentFeed";
 import { LoadingState } from "./components/LoadingState";
 import { ErrorState } from "./components/ErrorState";
 import { KeyIcon } from "./components/Icons";
 
-export type Tab = "actions" | "all" | "comments";
+export type Tab = "actions" | "all";
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; message: string }> {
   constructor(props: { children: React.ReactNode }) {
@@ -63,7 +62,6 @@ export function App() {
   const filteredPRs = selectedRepo ? pullRequests.filter((p) => p.repo === selectedRepo) : pullRequests;
 
   const actionCount = filteredPRs.filter((p) => p.myActionRequired).length;
-  const commentCount = filteredPRs.reduce((sum, p) => sum + p.comments.length, 0);
 
   return (
     <ErrorBoundary>
@@ -75,7 +73,6 @@ export function App() {
           onTabChange={setActiveTab}
           actionCount={actionCount}
           allCount={filteredPRs.length}
-          commentCount={commentCount}
         />
         <div className="flex-1 overflow-y-auto min-h-0">
           {error && !isLoading ? (
@@ -87,7 +84,6 @@ export function App() {
               <RepoFilter pullRequests={pullRequests} selectedRepo={selectedRepo} onSelect={setSelectedRepo} />
               {activeTab === "actions" && <ActionItems pullRequests={filteredPRs} />}
               {activeTab === "all" && <PRList pullRequests={filteredPRs} />}
-              {activeTab === "comments" && <CommentFeed pullRequests={filteredPRs} />}
             </>
           )}
         </div>

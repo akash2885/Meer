@@ -1,26 +1,23 @@
 import React from "react";
 import type { Tab } from "../App";
-import { AssignmentLateIcon, ListIcon, ChatIcon } from "./Icons";
+import { AssignmentLateIcon, ListIcon } from "./Icons";
 
 interface TabNavProps {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
   actionCount: number;
   allCount: number;
-  commentCount: number;
 }
 
 const TAB_ICONS: Record<Tab, React.ReactNode> = {
   actions: <AssignmentLateIcon className="w-3.5 h-3.5" />,
   all: <ListIcon className="w-3.5 h-3.5" />,
-  comments: <ChatIcon className="w-3.5 h-3.5" />,
 };
 
-export function TabNav({ activeTab, onTabChange, actionCount, allCount, commentCount }: TabNavProps) {
+export function TabNav({ activeTab, onTabChange, actionCount, allCount }: TabNavProps) {
   const tabs: { id: Tab; label: string; count?: number }[] = [
     { id: "actions", label: "Actions", count: actionCount },
     { id: "all", label: "All PRs", count: allCount },
-    { id: "comments", label: "Comments", count: commentCount > 0 ? commentCount : undefined },
   ];
 
   return (
