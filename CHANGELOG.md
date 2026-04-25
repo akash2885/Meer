@@ -11,6 +11,21 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.3.0] - 2026-04-24
+
+### Added
+
+- **Inline PR Comment Threads** — comment count on each PR card is now a toggle button that expands an inline thread; each comment shows author, relative timestamp, priority dot, and body; Reply button opens an inline textarea to post a general PR comment via the GitHub REST API; "Reply sent" confirmation shown on success; resolved comments hidden by default with a toggle to reveal them
+
+### Changed
+
+- Rebranded from **PRDash** to **Meer** — new name, new logo (prairie dog with binoculars)
+- Updated extension name in `manifest.json`, `package.json`, popup title, options page title, header, welcome screen, User-Agent header, and service worker logs
+- Added `scripts/generate-icons.sh` for resizing the logo into all Chrome extension icon sizes
+- Removed standalone Comments tab — comment threads are now accessible per-PR card in All PRs and Actions tabs
+
+---
+
 ## [1.2.0] - 2026-04-19
 
 ### Added
