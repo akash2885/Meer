@@ -1,8 +1,13 @@
 import React from "react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { PRCard } from "../../src/popup/components/PRCard";
 import { mockPR, mockCheckRun } from "../mocks/github";
+
+const NOW = new Date("2026-04-13T12:00:00Z").getTime();
+beforeEach(() => {
+  vi.setSystemTime(NOW);
+});
 
 // Mock useStore to avoid chrome.storage dependency
 vi.mock("../../src/popup/hooks/useStore", () => ({
@@ -98,5 +103,92 @@ describe("PRCard", () => {
     expect(ciButton).toBeInTheDocument();
     fireEvent.click(ciButton);
     expect(screen.getByRole("button", { name: /hide ci/i })).toBeInTheDocument();
+  });
+
+  describe("ReviewSLABadge", () => {
+    it("shows no SLA indicator on draft PRs", () => {
+      const pr = mockPR({
+        isDraft: true,
+        requestedReviewerCount: 2,
+        approvalCount: 0,
+        updatedAt: new Date(NOW - 30 * 3600 * 1000).toISOString(),
+      });
+      const { container } = render(<PRCard pr={pr} />);
+      expect(container.querySelector("[data-sla-tier]")).toBeNull();
+    });
+
+    it("shows no SLA indicator when no reviewers are assigned", () => {
+      const pr = mockPR({
+        isDraft: false,
+        requestedReviewerCount: 0,
+        approvalCount: 0,
+        updatedAt: new Date(NOW - 30 * 3600 * 1000).toISOString(),
+      });
+      const { container } = render(<PRCard pr={pr} />);
+      expect(container.querySelector("[data-sla-tier]")).toBeNull();
+    });
+
+    it("shows no SLA indicator when PR is fully approved", () => {
+      const pr = mockPR({
+        isDraft: false,
+        requestedReviewerCount: 2,
+        approvalCount: 2,
+        updatedAt: new Date(NOW - 30 * 3600 * 1000).toISOString(),
+      });
+      const { container } = render(<PRCard pr={pr} />);
+      expect(container.querySelector("[data-sla-tier]")).toBeNull();
+    });
+
+    it("shows 'good' tier (no clock icon) when review is pending and updated < 4h ago", () => {
+      const pr = mockPR({
+        isDraft: false,
+        requestedReviewerCount: 2,
+        approvalCount: 0,
+        updatedAt: new Date(NOW - 2 * 3600 * 1000).toISOString(),
+      });
+      const { container } = render(<PRCard pr={pr} />);
+      const badge = container.querySelector("[data-sla-tier='good']");
+      expect(badge).toBeInTheDocument();
+      expect(badge!.querySelector("svg")).toBeNull();
+    });
+
+    it("shows 'warning' tier with clock icon at 4–24h", () => {
+      const pr = mockPR({
+        isDraft: false,
+        requestedReviewerCount: 2,
+        approvalCount: 0,
+        updatedAt: new Date(NOW - 8 * 3600 * 1000).toISOString(),
+      });
+      const { container } = render(<PRCard pr={pr} />);
+      const badge = container.querySelector("[data-sla-tier='warning']");
+      expect(badge).toBeInTheDocument();
+      expect(badge!.querySelector("svg")).toBeInTheDocument();
+      expect(badge).toHaveClass("text-amber-400");
+    });
+
+    it("shows 'critical' tier with clock icon past 24h", () => {
+      const pr = mockPR({
+        isDraft: false,
+        requestedReviewerCount: 2,
+        approvalCount: 0,
+        updatedAt: new Date(NOW - 36 * 3600 * 1000).toISOString(),
+      });
+      const { container } = render(<PRCard pr={pr} />);
+      const badge = container.querySelector("[data-sla-tier='critical']");
+      expect(badge).toBeInTheDocument();
+      expect(badge!.querySelector("svg")).toBeInTheDocument();
+      expect(badge).toHaveClass("text-red-400");
+    });
+
+    it("SLA badge shows correct relative time text", () => {
+      const pr = mockPR({
+        isDraft: false,
+        requestedReviewerCount: 1,
+        approvalCount: 0,
+        updatedAt: new Date(NOW - 6 * 3600 * 1000).toISOString(),
+      });
+      render(<PRCard pr={pr} />);
+      expect(screen.getByText("6h ago")).toBeInTheDocument();
+    });
   });
 });
