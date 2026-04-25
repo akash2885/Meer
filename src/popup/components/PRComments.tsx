@@ -15,6 +15,11 @@ const PRIORITY_DOT: Record<Comment["priorityLevel"], string> = {
   low: "bg-slate-500",
 };
 
+function extractReviewCommentId(url: string): number | null {
+  const match = url.match(/#discussion_r(\d+)$/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
 function CommentRow({ comment, prNumber, repo }: { comment: Comment; prNumber: number; repo: string }) {
   const [replyOpen, setReplyOpen] = useState(false);
   const [body, setBody] = useState("");
@@ -29,7 +34,12 @@ function CommentRow({ comment, prNumber, repo }: { comment: Comment; prNumber: n
     setSubmitting(true);
     try {
       const client = createClient(settings);
-      await client.addPRComment(owner, repoName, prNumber, body.trim());
+      const reviewCommentId = extractReviewCommentId(comment.url);
+      if (reviewCommentId !== null) {
+        await client.replyToReviewComment(owner, repoName, prNumber, reviewCommentId, body.trim());
+      } else {
+        await client.addPRComment(owner, repoName, prNumber, body.trim());
+      }
       setSent(true);
       setBody("");
       setReplyOpen(false);

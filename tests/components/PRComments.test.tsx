@@ -14,6 +14,7 @@ vi.mock("../../src/popup/hooks/useStore", () => ({
 vi.mock("../../src/lib/github", () => ({
   createClient: vi.fn(() => ({
     addPRComment: vi.fn().mockResolvedValue(undefined),
+    replyToReviewComment: vi.fn().mockResolvedValue(undefined),
   })),
 }));
 
@@ -76,15 +77,25 @@ describe("PRComments", () => {
     expect(screen.getByRole("button", { name: /send reply/i })).not.toBeDisabled();
   });
 
-  it("calls addPRComment with correct args on send", async () => {
+  it("calls replyToReviewComment when comment URL contains #discussion_r", async () => {
     const { createClient } = await import("../../src/lib/github");
+    const replyMock = vi.fn().mockResolvedValue(undefined);
     const addMock = vi.fn().mockResolvedValue(undefined);
-    (createClient as ReturnType<typeof vi.fn>).mockReturnValue({ addPRComment: addMock });
+    (createClient as ReturnType<typeof vi.fn>).mockReturnValue({
+      replyToReviewComment: replyMock,
+      addPRComment: addMock,
+    });
 
     const pr = mockPR({
       repo: "org/repo",
       number: 7,
-      comments: [mockComment({ id: "c1", body: "Fix this" })],
+      comments: [
+        mockComment({
+          id: "c1",
+          body: "Fix this",
+          url: "https://github.com/org/repo/pull/7#discussion_r9876543",
+        }),
+      ],
     });
     render(<PRComments pr={pr} />);
     fireEvent.click(screen.getByRole("button", { name: /reply to comment/i }));
@@ -93,7 +104,40 @@ describe("PRComments", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: /send reply/i }));
     await waitFor(() => {
-      expect(addMock).toHaveBeenCalledWith("org", "repo", 7, "Fixed!");
+      expect(replyMock).toHaveBeenCalledWith("org", "repo", 7, 9876543, "Fixed!");
+      expect(addMock).not.toHaveBeenCalled();
+    });
+  });
+
+  it("falls back to addPRComment for non-review (issue) comments", async () => {
+    const { createClient } = await import("../../src/lib/github");
+    const replyMock = vi.fn().mockResolvedValue(undefined);
+    const addMock = vi.fn().mockResolvedValue(undefined);
+    (createClient as ReturnType<typeof vi.fn>).mockReturnValue({
+      replyToReviewComment: replyMock,
+      addPRComment: addMock,
+    });
+
+    const pr = mockPR({
+      repo: "org/repo",
+      number: 7,
+      comments: [
+        mockComment({
+          id: "c1",
+          body: "LGTM",
+          url: "https://github.com/org/repo/pull/7#issuecomment-111222333",
+        }),
+      ],
+    });
+    render(<PRComments pr={pr} />);
+    fireEvent.click(screen.getByRole("button", { name: /reply to comment/i }));
+    fireEvent.change(screen.getByRole("textbox", { name: /reply body/i }), {
+      target: { value: "Thanks!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /send reply/i }));
+    await waitFor(() => {
+      expect(addMock).toHaveBeenCalledWith("org", "repo", 7, "Thanks!");
+      expect(replyMock).not.toHaveBeenCalled();
     });
   });
 
