@@ -100,6 +100,15 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+export type SLATier = "good" | "warning" | "critical";
+
+export function reviewSLATier(updatedAt: string): SLATier {
+  const hours = (Date.now() - new Date(updatedAt).getTime()) / (1000 * 60 * 60);
+  if (hours < 4) return "good";
+  if (hours < 24) return "warning";
+  return "critical";
+}
+
 /**
  * Check if a string contains a keyword (case-insensitive, whole word not required).
  */

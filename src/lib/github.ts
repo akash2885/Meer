@@ -173,6 +173,29 @@ export class GitHubClient {
     }
   }
 
+  async replyToReviewComment(
+    owner: string,
+    repo: string,
+    pullNumber: number,
+    inReplyTo: number,
+    body: string
+  ): Promise<void> {
+    const url = `${this.restUrl}/repos/${owner}/${repo}/pulls/${pullNumber}/comments`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "Meer-Extension/1.0",
+        Accept: "application/vnd.github+json",
+      },
+      body: JSON.stringify({ body, in_reply_to: inReplyTo }),
+    });
+    if (!response.ok) {
+      throw new GitHubNetworkError(`Failed to post reply: ${response.status}`);
+    }
+  }
+
   async submitReview(
     owner: string,
     repo: string,
