@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write # needed to upload assets to the GitHub release
+
+jobs:
+  build-and-attach:
+    name: Build extension and attach zip
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify package version matches tag
+        run: |
+          PKG_VERSION="v$(node -p "require('./package.json').version")"
+          TAG="${{ github.ref_name }}"
+          if [ "$PKG_VERSION" != "$TAG" ]; then
+            echo "Version mismatch: package.json has $PKG_VERSION but tag is $TAG"
+            exit 1
+          fi
+          echo "Version verified: $TAG"
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Package extension zip
+        run: |
+          cd dist
+          zip -r "../meer-${{ github.ref_name }}.zip" .
+          cd ..
+          echo "Packaged: meer-${{ github.ref_name }}.zip ($(du -sh meer-${{ github.ref_name }}.zip | cut -f1))"
+
+      - name: Upload zip to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "meer-${{ github.ref_name }}.zip"
+          fail_on_unmatched_files: true
