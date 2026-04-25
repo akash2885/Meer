@@ -8,6 +8,7 @@ import {
   clamp,
   containsKeyword,
   generateCommentId,
+  reviewSLATier,
 } from "../../src/lib/utils";
 
 const NOW = new Date("2026-04-13T12:00:00Z").getTime();
@@ -102,6 +103,43 @@ describe("containsKeyword", () => {
   });
   it("returns false when keyword not present", () => {
     expect(containsKeyword("looks good", "bug")).toBe(false);
+  });
+});
+
+describe("reviewSLATier", () => {
+  it("returns 'good' when updated less than 4 hours ago", () => {
+    const updatedAt = new Date(NOW - 3 * 3600 * 1000).toISOString();
+    expect(reviewSLATier(updatedAt)).toBe("good");
+  });
+
+  it("returns 'good' for a PR updated just now", () => {
+    const updatedAt = new Date(NOW - 10 * 60 * 1000).toISOString();
+    expect(reviewSLATier(updatedAt)).toBe("good");
+  });
+
+  it("returns 'warning' at exactly 4 hours", () => {
+    const updatedAt = new Date(NOW - 4 * 3600 * 1000).toISOString();
+    expect(reviewSLATier(updatedAt)).toBe("warning");
+  });
+
+  it("returns 'warning' between 4 and 24 hours", () => {
+    const updatedAt = new Date(NOW - 12 * 3600 * 1000).toISOString();
+    expect(reviewSLATier(updatedAt)).toBe("warning");
+  });
+
+  it("returns 'warning' just under 24 hours", () => {
+    const updatedAt = new Date(NOW - 23.9 * 3600 * 1000).toISOString();
+    expect(reviewSLATier(updatedAt)).toBe("warning");
+  });
+
+  it("returns 'critical' at exactly 24 hours", () => {
+    const updatedAt = new Date(NOW - 24 * 3600 * 1000).toISOString();
+    expect(reviewSLATier(updatedAt)).toBe("critical");
+  });
+
+  it("returns 'critical' for a PR updated 3 days ago", () => {
+    const updatedAt = new Date(NOW - 3 * 86400 * 1000).toISOString();
+    expect(reviewSLATier(updatedAt)).toBe("critical");
   });
 });
 

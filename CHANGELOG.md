@@ -11,6 +11,24 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.4.0] - 2026-04-25
+
+### Added
+
+- **Review SLA indicators** — the timestamp on each PR card is now color-coded by review wait time when a review is pending (non-draft, reviewers assigned, not fully approved): slate/neutral under 4 hours, amber + clock icon at 4–24 hours, red + clock icon past 24 hours; no visual change for authored or fully-approved PRs
+- **CodeQL security analysis** — static analysis workflow runs on every push/PR to `main`/`dev` and weekly on a schedule; uses `security-extended` query suite to catch XSS, prototype pollution, and other JS/TS vulnerabilities
+- **Automated release packaging** — new `release.yml` workflow triggers on `v*` tags, verifies `package.json` version matches the tag, builds the extension, and attaches a `meer-vX.Y.Z.zip` to the GitHub release for Chrome Web Store submission
+
+### Fixed
+
+- **Comment replies now thread correctly on GitHub** — replying to an inline review comment (URL contains `#discussion_r{id}`) now uses `POST /pulls/{number}/comments` with `in_reply_to`, so the reply appears in the original comment's thread instead of at the bottom of the PR timeline; general issue comments still fall back to the previous behavior
+
+### Security
+
+- Hardened GitHub Actions token permissions — all workflows now declare explicit `permissions` blocks; `ci.yml` and `typos.yml` run with `contents: read` only, preventing token misuse if a third-party action is compromised
+
+---
+
 ## [1.3.0] - 2026-04-24
 
 ### Added

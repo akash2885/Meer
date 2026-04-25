@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { PullRequest } from "../../lib/types";
-import { timeAgo, truncate } from "../../lib/utils";
+import { timeAgo, truncate, reviewSLATier } from "../../lib/utils";
+import type { SLATier } from "../../lib/utils";
 import { CIStatus } from "./CIStatus";
 import { ReviewActions } from "./ReviewActions";
 import { PRComments } from "./PRComments";
@@ -16,6 +17,7 @@ import {
   ArrowForwardIcon,
   ContentCopyIcon,
   CheckIcon,
+  AccessTimeIcon,
 } from "./Icons";
 
 interface PRCardProps {
@@ -43,6 +45,29 @@ function HealthBadge({ status }: { status: PullRequest["healthStatus"] }) {
   return (
     <span className="badge-red" title="CI failing, changes requested, or merge conflict">
       <CircleIcon className="w-2 h-2" />
+    </span>
+  );
+}
+
+const SLA_STYLES: Record<SLATier, { color: string; label: string }> = {
+  good: { color: "text-slate-400", label: "Review on track" },
+  warning: { color: "text-amber-400", label: "Review getting slow" },
+  critical: { color: "text-red-400", label: "Review overdue" },
+};
+
+function ReviewSLABadge({ pr }: { pr: PullRequest }) {
+  const reviewPending = !pr.isDraft && pr.requestedReviewerCount > 0 && pr.approvalCount < pr.requestedReviewerCount;
+  const tier = reviewPending ? reviewSLATier(pr.updatedAt) : "good";
+  const { color, label } = SLA_STYLES[tier];
+  const showClock = reviewPending && tier !== "good";
+  return (
+    <span
+      className={`flex items-center gap-0.5 text-xs ${color}`}
+      title={reviewPending ? `${label} — last activity ${timeAgo(pr.updatedAt)}` : undefined}
+      data-sla-tier={reviewPending ? tier : undefined}
+    >
+      {showClock && <AccessTimeIcon className="w-3 h-3" />}
+      {timeAgo(pr.updatedAt)}
     </span>
   );
 }
@@ -128,7 +153,7 @@ export function PRCard({ pr, showActionReason = false, expandedReviewCardId, set
           <span>{pr.author.login}</span>
         </span>
 
-        <span>{timeAgo(pr.updatedAt)}</span>
+        <ReviewSLABadge pr={pr} />
 
         {pr.requestedReviewerCount > 0 && (
           <span className="flex items-center gap-0.5" title="Approvals">
