@@ -3,6 +3,9 @@
   "version": "1.4.0",
   "description": "Developer-focused pull request dashboard Chrome extension",
   "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -10,6 +13,15 @@
     "test:watch": "vitest",
     "lint": "tsc --noEmit && eslint src --ext .ts,.tsx",
     "format:check": "prettier --check \"src/**/*.{ts,tsx}\" \"tests/**/*.{ts,tsx}\""
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --max-warnings 0",
+      "prettier --write"
+    ],
+    "tests/**/*.{ts,tsx}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "react": "^18.3.1",
