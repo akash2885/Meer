@@ -156,6 +156,23 @@ export class GitHubClient {
     await this.submitReview(owner, repo, pullNumber, "APPROVE");
   }
 
+  async addPRComment(owner: string, repo: string, pullNumber: number, body: string): Promise<void> {
+    const url = `${this.restUrl}/repos/${owner}/${repo}/issues/${pullNumber}/comments`;
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.token}`,
+        "Content-Type": "application/json",
+        "User-Agent": "Meer-Extension/1.0",
+        Accept: "application/vnd.github+json",
+      },
+      body: JSON.stringify({ body }),
+    });
+    if (!response.ok) {
+      throw new GitHubNetworkError(`Failed to post comment: ${response.status}`);
+    }
+  }
+
   async submitReview(
     owner: string,
     repo: string,

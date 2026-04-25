@@ -3,6 +3,7 @@ import type { PullRequest } from "../../lib/types";
 import { timeAgo, truncate } from "../../lib/utils";
 import { CIStatus } from "./CIStatus";
 import { ReviewActions } from "./ReviewActions";
+import { PRComments } from "./PRComments";
 import {
   CircleIcon,
   CancelIcon,
@@ -72,6 +73,7 @@ function CIIcon({ pr }: { pr: PullRequest }) {
 
 export function PRCard({ pr, showActionReason = false, expandedReviewCardId, setExpandedReviewCardId }: PRCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [commentsExpanded, setCommentsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const reviewIsOpen = expandedReviewCardId === pr.id;
@@ -136,10 +138,18 @@ export function PRCard({ pr, showActionReason = false, expandedReviewCardId, set
         )}
 
         {pr.comments.length > 0 && (
-          <span className="flex items-center gap-0.5" title="Comments">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCommentsExpanded((v) => !v);
+            }}
+            className={`flex items-center gap-0.5 transition-colors ${commentsExpanded ? "text-blue-400" : "hover:text-slate-200"}`}
+            title={commentsExpanded ? "Hide comments" : "Show comments"}
+            aria-label={commentsExpanded ? "Hide comments" : "Show comments"}
+          >
             <ChatIcon className="w-3 h-3" />
             {pr.comments.length}
-          </span>
+          </button>
         )}
 
         {isConflicting && (
@@ -212,6 +222,12 @@ export function PRCard({ pr, showActionReason = false, expandedReviewCardId, set
       {expanded && (
         <div className="mt-2 pt-2 border-t border-slate-700" onClick={(e) => e.stopPropagation()}>
           <CIStatus pr={pr} />
+        </div>
+      )}
+
+      {commentsExpanded && (
+        <div className="mt-2 pt-2 border-t border-slate-700" onClick={(e) => e.stopPropagation()}>
+          <PRComments pr={pr} />
         </div>
       )}
     </div>

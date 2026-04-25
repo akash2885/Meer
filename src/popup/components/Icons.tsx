@@ -127,6 +127,10 @@ export const ListIcon = (p: IconProps) => (
   <Icon {...p} path="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
 );
 
+export const ReplyIcon = (p: IconProps) => (
+  <Icon {...p} path="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+);
+
 export const PriorityHighIcon = (p: IconProps) => (
   <Icon
     {...p}
